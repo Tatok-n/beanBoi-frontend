@@ -1,5 +1,6 @@
 import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
 import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
+import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 
@@ -11,7 +12,8 @@ class BeansDisplay extends StatefulWidget {
 class _BeansState extends State<BeansDisplay> {
   String user = "user0";
   List<Map> beans = [];
-  bool isLoading = true; // Track loading state
+  bool isLoading = true; 
+  Userprefs prefs = Userprefs();
 
   @override
   void initState() {
@@ -38,7 +40,7 @@ class _BeansState extends State<BeansDisplay> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Beans List"),
+        title: Text("BEANS", style: TextStyle( fontSize: prefs.bigFont),),
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator()) // Show loading indicator
