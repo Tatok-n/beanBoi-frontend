@@ -1,4 +1,5 @@
 import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
+import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 
