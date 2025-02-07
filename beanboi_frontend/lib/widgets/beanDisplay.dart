@@ -1,3 +1,4 @@
+import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 
@@ -45,15 +46,7 @@ class _BeansState extends State<BeansDisplay> {
               : ListView.builder(
                   itemCount: beans.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: Container(
-                        child : Column(children: [Container(child :Text(beans[index]['Name'] ?? 'Unnamed Bean')),
-                        Container(child :Text(beans[index]['price']?.toString() ?? 'No price'))])
-                          
-                        , // Convert to string and handle null
-                      ),
-                      
-                    );
+                    return DataCard(beans[index]);
                   },
                 ),
     );
