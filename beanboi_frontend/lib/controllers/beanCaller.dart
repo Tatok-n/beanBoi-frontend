@@ -11,7 +11,6 @@ Future<List<Map<String,dynamic>>> getAllBeans(String UID) async {
 }
 
 Future<void> saveBean (Map<String, dynamic> map, String UID) async {
-  print("got here");
   String saveBeanURL = "/users/"+UID+"/beans/";
   await manager.sendPost(saveBeanURL, map);
 } 

@@ -21,13 +21,24 @@ class DataCard extends StatelessWidget {
           border: Border.all(color: userprefs.mainAccent, width: 2)),
       child: ExpansionTile(
         title: Text(
-          data["Name"],
+          data["name"],
           style: TextStyle(
             color: userprefs.mainAccent,
             fontSize: userprefs.mediumFont,
           ),
         ),
         children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Row(mainAxisSize: MainAxisSize.min,
+                  children: [Icon(Icons.edit), Text("Edit")],),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
             child: Container(
@@ -49,8 +60,20 @@ class DataCard extends StatelessWidget {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Label("Roaster", data["Roaster"].toString()),
+                              Label("Roaster", data["roaster"].toString()),
                               Label("Altitude", data["altitude"].toString())
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Label("Origin", data["origin"].toString()),
+                              Label("Process", data["process"].toString())
                             ],
                           ),
                         ),

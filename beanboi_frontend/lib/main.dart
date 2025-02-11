@@ -1,14 +1,16 @@
 import 'package:beanboi_frontend/widgets/beanDisplay.dart';
+import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'controllers/beanCaller.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+  final Userprefs userprefs = Userprefs();
 
   // This widget is the root of your application.
   @override
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: userprefs.mainAccent),
         useMaterial3: true,
       ),
       home: BeansDisplay()

@@ -61,20 +61,19 @@ class _BeansState extends State<BeansDisplay> {
               await showDialog<void>(
                 context: context,
                 builder: (context) => AlertDialog(
+                  backgroundColor: prefs.black3,
                   content: Stack(
                     clipBehavior: Clip.none,
                     children: <Widget>[
                       Positioned(
-                        right: -40,
-                        top: -40,
+                        right: 0,
+                        top: 0,
                         child: InkResponse(
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: const CircleAvatar(
-                            backgroundColor: Colors.red,
-                            child: Icon(Icons.close),
-                          ),
+                          child:Icon(Icons.close, color: prefs.accent2, size: 16,),
+                          
                         ),
                       ),
                       Form(
@@ -86,10 +85,30 @@ class _BeansState extends State<BeansDisplay> {
                               padding: const EdgeInsets.all(8),
                               child: TextFormField(
                                 decoration: const InputDecoration(
-                                    hintText: 'Enter Bean name/Origin',
+                                    hintText: 'Enter Bean name',
                                     labelText: 'Name'),
                                 onSaved: (newValue) =>
-                                    beanToAdd["Name"] = newValue,
+                                    beanToAdd["name"] = newValue,
+                              ),
+                            ),
+                                                        Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                    hintText: 'Enter Bean Origin',
+                                    labelText: 'Origin'),
+                                onSaved: (newValue) =>
+                                    beanToAdd["origin"] = newValue,
+                              ),
+                            ),
+                                                        Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                    hintText: 'Enter the process used',
+                                    labelText: 'process'),
+                                onSaved: (newValue) =>
+                                    beanToAdd["process"] = newValue,
                               ),
                             ),
                             Padding(
@@ -133,7 +152,7 @@ class _BeansState extends State<BeansDisplay> {
                                     hintText: 'Enter name of Roaster',
                                     labelText: 'Roaster'),
                                 onSaved: (newValue) =>
-                                    beanToAdd["Roaster"] = newValue,
+                                    beanToAdd["roaster"] = newValue,
                               ),
                             ),
                             Padding(
@@ -189,7 +208,6 @@ class _BeansState extends State<BeansDisplay> {
             },
             label: Text('Add bean'),
             icon: Icon(Icons.add),
-            backgroundColor: prefs.accent3,
           ),
           appBar: AppBar(
             title: Text(
