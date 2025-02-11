@@ -89,7 +89,7 @@ class _BeansState extends State<BeansDisplay> {
                                     hintText: 'Enter Bean name/Origin',
                                     labelText: 'Name'),
                                 onSaved: (newValue) =>
-                                    beanToAdd["name"] = newValue,
+                                    beanToAdd["Name"] = newValue,
                               ),
                             ),
                             Padding(

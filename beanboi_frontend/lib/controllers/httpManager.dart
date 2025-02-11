@@ -3,7 +3,7 @@ import 'dart:convert';
 
 
 
-String baseUrl = "http://localhost:8080";
+String baseUrl = "http://localhost:8090";
 
 
 
@@ -19,7 +19,9 @@ Future<String> sendGet(String path) async {
     }
 
 Future<String> sendPost(String path, Object body) async {
-  final response = await http.post(Uri.parse(baseUrl + path), body: jsonEncode(body));
+  final response = await http.post(Uri.parse(baseUrl + path),
+   headers: {'Content-Type': 'application/json'},
+   body: jsonEncode(body));
       if (response.statusCode == 200) {
         return response.body;
     } else {
