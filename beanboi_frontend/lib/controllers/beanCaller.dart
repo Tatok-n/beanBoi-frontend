@@ -15,4 +15,9 @@ Future<void> saveBean (Map<String, dynamic> map, String UID) async {
   await manager.sendPost(saveBeanURL, map);
 } 
 
+Future<void> updateBean (Map<String, dynamic> map, String UID) async {
+  String updateBeanUrl = "/users/"+UID+"/beans/"+map["id"];
+  await manager.sendPost(updateBeanUrl, map);
+} 
+
 

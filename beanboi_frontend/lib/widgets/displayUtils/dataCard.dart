@@ -5,11 +5,15 @@ import 'package:beanboi_frontend/widgets/displayUtils/label.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:beanboi_frontend/widgets/beanDisplay.dart'; // Import BeanDialog
 
 class DataCard extends StatelessWidget {
-  DataCard(this.data, {super.key});
+  DataCard(this.data, this.dialog, this.updateBeanCallback, {super.key});
 
   final Map<dynamic, dynamic> data;
+  final Widget dialog;
+  final Function(Map<dynamic, dynamic>) updateBeanCallback;
+
   final Userprefs userprefs = Userprefs();
 
   @override
@@ -33,9 +37,18 @@ class DataCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
-                onPressed: () {},
-                child: Row(mainAxisSize: MainAxisSize.min,
-                  children: [Icon(Icons.edit), Text("Edit")],),
+                onPressed: () async {
+                  await showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) => dialog,
+                  );
+                  print("Updated bean: $data");
+                  updateBeanCallback(data);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [Icon(Icons.edit), Text("Edit")],
+                ),
               ),
             ),
           ),
@@ -85,8 +98,7 @@ class DataCard extends StatelessWidget {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Label("Price", data["price"].toString()),
-                              Label("Roast Degree",
-                                  data["roastDegree"].toString())
+                              Label("Roast Degree", data["roastDegree"].toString())
                             ],
                           ),
                         ),
@@ -94,8 +106,7 @@ class DataCard extends StatelessWidget {
                     ],
                   ),
                   Container(
-                      child: Label(
-                          "Tasting notes", data["tastingNotes"].toString()))
+                      child: Label("Tasting notes", data["tastingNotes"].toString()))
                 ],
               ),
             ),

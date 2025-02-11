@@ -15,6 +15,7 @@ class _BeansState extends State<BeansDisplay> {
   String user = "user0";
   List<Map> beans = [];
   late Map<String, dynamic> beanToAdd = new Map();
+  late Map<String, dynamic> beanToUpdate = new Map();
   Map<String, String> addInitialValue = {
     "name": "",
     "origin": "",
@@ -58,6 +59,15 @@ class _BeansState extends State<BeansDisplay> {
     await fetchBeans();
   }
 
+  Future<void> updateBeans(beanToUpdate) async {
+    try {
+      await beanCaller.saveBean(beanToUpdate, user);
+    } catch (e) {
+      print("Error adding beans: $e");
+    }
+    await fetchBeans();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -91,7 +101,12 @@ class _BeansState extends State<BeansDisplay> {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: DataCard(beans[index]),
+                          child: DataCard(
+                              beans[index],
+                              BeanDialog(context,beans[index],beanToUpdate,"Update Bean",() {}),(updatedBean) { 
+                                updateBeans(beanToUpdate);
+                                setState(() { beans[index] = updatedBean;});},
+                          ),
                         );
                       },
                     ),
@@ -100,7 +115,7 @@ class _BeansState extends State<BeansDisplay> {
     );
   }
 
-  Widget BeanDialog(context, Map<String, String> initialValues, Map<String, dynamic> mapToEdit, String buttonText, Function saveFunction) => AlertDialog(
+  Widget BeanDialog(context, Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToEdit, String buttonText, Function saveFunction) => AlertDialog(
       backgroundColor: prefs.black3,
       content: Stack(
         clipBehavior: Clip.none,
@@ -173,7 +188,7 @@ class _BeansState extends State<BeansDisplay> {
 
   
 
-  Padding GetFormField(Map<String, String> initialValues, Map<String, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText) {
+  Padding GetFormField(Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText) {
     return Padding(
                 padding: const EdgeInsets.all(8),
                 child: TextFormField(
@@ -189,13 +204,13 @@ class _BeansState extends State<BeansDisplay> {
   
   }
 
-  Padding GetFormFieldWithValidator(Map<String, String> initialValues, Map<String, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText, FormFieldValidator<String>? validator, FormFieldSetter<String>? onSaved) {
+  Padding GetFormFieldWithValidator(Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText, FormFieldValidator<String>? validator, FormFieldSetter<String>? onSaved) {
     return Padding(
                 
                 padding: const EdgeInsets.all(8),
                 child: TextFormField(
                   validator : validator,
-                  initialValue: initialValues[keyToEdit],
+                  initialValue: initialValues[keyToEdit].toString(),
                   decoration: InputDecoration(
                       hintText: hintText,
                       labelText: labelText),
