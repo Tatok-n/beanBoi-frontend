@@ -70,7 +70,7 @@ class _BeansState extends State<BeansDisplay> {
               beanToAdd = {};
               await showDialog<void>(
                 context: context,
-                builder: (BuildContext context) => addBeanDialog(context, addInitialValue,"Add Bean"),
+                builder: (BuildContext context) => BeanDialog(context, addInitialValue,beanToAdd,"Add Bean", saveBeans),
               );
             },
             label: Text('Add bean'),
@@ -100,7 +100,7 @@ class _BeansState extends State<BeansDisplay> {
     );
   }
 
-  Widget addBeanDialog(context, Map<String, String> initialValues, String buttonText) => AlertDialog(
+  Widget BeanDialog(context, Map<String, String> initialValues, Map<String, dynamic> mapToEdit, String buttonText, Function saveFunction) => AlertDialog(
       backgroundColor: prefs.black3,
       content: Stack(
         clipBehavior: Clip.none,
@@ -121,14 +121,14 @@ class _BeansState extends State<BeansDisplay> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                GetFormField(initialValues, beanToAdd, "name", "Enter bean name", "Name"),
-                GetFormField(initialValues, beanToAdd, "origin", "Enter bean Origin", "Origin"),
-                GetFormField(initialValues, beanToAdd, "process", "Enter the process used", "Process"),
-                GetFormFieldWithValidator(initialValues, beanToAdd, "price", "Enter Bean price/100g", "Price", decimalValidator, (value) => beanToAdd["price"] = double.tryParse(value ?? '') ?? 0.0),
-                GetFormFieldWithValidator(initialValues, beanToAdd, "roastDegree", "Enter roast Degree", "Roast Degree", intValidator,  (newValue) =>beanToAdd["roastDegree"] = int.tryParse(newValue ?? '')),
-                GetFormField(initialValues, beanToAdd, "roaster", "Enter Roaster", "Roaster"),
-                GetFormFieldWithValidator(initialValues, beanToAdd, "altitude", "Enter altitude of cultivation", "Altitude", intValidator,  (newValue) =>beanToAdd["altitude"] = int.tryParse(newValue ?? '')),
-                GetFormField(initialValues, beanToAdd, "tastingNotes", 'What does the coffee taste like...', "Tasting notes"),
+                GetFormField(initialValues, mapToEdit, "name", "Enter bean name", "Name"),
+                GetFormField(initialValues, mapToEdit, "origin", "Enter bean Origin", "Origin"),
+                GetFormField(initialValues, mapToEdit, "process", "Enter the process used", "Process"),
+                GetFormFieldWithValidator(initialValues, mapToEdit, "price", "Enter Bean price/100g", "Price", decimalValidator, (value) => mapToEdit["price"] = double.tryParse(value ?? '') ?? 0.0),
+                GetFormFieldWithValidator(initialValues, mapToEdit, "roastDegree", "Enter roast Degree", "Roast Degree", intValidator,  (newValue) =>mapToEdit["roastDegree"] = int.tryParse(newValue ?? '')),
+                GetFormField(initialValues, mapToEdit, "roaster", "Enter Roaster", "Roaster"),
+                GetFormFieldWithValidator(initialValues, mapToEdit, "altitude", "Enter altitude of cultivation", "Altitude", intValidator,  (newValue) =>mapToEdit["altitude"] = int.tryParse(newValue ?? '')),
+                GetFormField(initialValues, mapToEdit, "tastingNotes", 'What does the coffee taste like...', "Tasting notes"),
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: ElevatedButton(
@@ -137,9 +137,7 @@ class _BeansState extends State<BeansDisplay> {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         Navigator.of(context).pop();
-                        saveBeans().then((_) {
-                          setState(() {});
-                        });
+                        addBeans();
                       }
                     },
                   ),
@@ -150,6 +148,13 @@ class _BeansState extends State<BeansDisplay> {
         ],
       ),
     );
+
+  void addBeans() {
+    saveBeans().then((_) {
+      setState(() {});
+    });
+                          
+  }
 
   String? intValidator(value) {
                       return (value != null &&
