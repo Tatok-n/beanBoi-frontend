@@ -18,5 +18,14 @@ Future<String> sendGet(String path) async {
     }
     }
 
+Future<String> sendPost(String path, Object body) async {
+  final response = await http.post(Uri.parse(baseUrl + path), body: jsonEncode(body));
+      if (response.statusCode == 200) {
+        return response.body;
+    } else {
+        return "Error ${response.statusCode}: ${response.body}";
+    }
+}
+
 
 
