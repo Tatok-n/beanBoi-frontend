@@ -15,6 +15,16 @@ class _BeansState extends State<BeansDisplay> {
   String user = "user0";
   List<Map> beans = [];
   late Map<String, dynamic> beanToAdd = new Map();
+  Map<String, String> addInitialValue = {
+    "name": "",
+    "origin": "",
+    "process": "",
+    "price": "",
+    "roastDegree": "",
+    "roaster": "",
+    "altitude": "",
+    "tastingNotes": ""
+  };
   bool isLoading = true;
   Userprefs prefs = Userprefs();
 
@@ -41,7 +51,7 @@ class _BeansState extends State<BeansDisplay> {
 
   Future<void> saveBeans() async {
     try {
-      await beanCaller.saveBean(beanToAdd, user);
+      await beanCaller.saveBean(beanToAdd, user, );
     } catch (e) {
       print("Error adding beans: $e");
     }
@@ -60,150 +70,7 @@ class _BeansState extends State<BeansDisplay> {
               beanToAdd = {};
               await showDialog<void>(
                 context: context,
-                builder: (context) => AlertDialog(
-                  backgroundColor: prefs.black3,
-                  content: Stack(
-                    clipBehavior: Clip.none,
-                    children: <Widget>[
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: InkResponse(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child:Icon(Icons.close, color: prefs.accent2, size: 16,),
-                          
-                        ),
-                      ),
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter Bean name',
-                                    labelText: 'Name'),
-                                onSaved: (newValue) =>
-                                    beanToAdd["name"] = newValue,
-                              ),
-                            ),
-                                                        Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter Bean Origin',
-                                    labelText: 'Origin'),
-                                onSaved: (newValue) =>
-                                    beanToAdd["origin"] = newValue,
-                              ),
-                            ),
-                                                        Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter the process used',
-                                    labelText: 'process'),
-                                onSaved: (newValue) =>
-                                    beanToAdd["process"] = newValue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter Bean price/100g',
-                                    labelText: 'Price'),
-                                validator: (value) {
-                                  return (value != null &&
-                                          RegExp(r'^[0-9]+(\.[0-9]+)?$')
-                                              .hasMatch(value))
-                                      ? null
-                                      : 'Only decimal numbers are allowed.';
-                                },
-                                onSaved: (value) => beanToAdd["price"] =
-                                    double.tryParse(value ?? '') ?? 0.0,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter roast degree',
-                                    labelText: 'Roast degree'),
-                                validator: (value) {
-                                  return (value != null &&
-                                          RegExp(r'^[0-9]+$').hasMatch(value))
-                                      ? null
-                                      : 'Only whole numbers are allowed.';
-                                },
-                                onSaved: (newValue) =>
-                                    beanToAdd["roastDegree"] =
-                                        int.tryParse(newValue ?? ''),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter name of Roaster',
-                                    labelText: 'Roaster'),
-                                onSaved: (newValue) =>
-                                    beanToAdd["roaster"] = newValue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText: 'Enter altitude of cultivation',
-                                    labelText: 'Altitude'),
-                                validator: (value) {
-                                  return (value != null &&
-                                          RegExp(r'^[0-9]+$').hasMatch(value))
-                                      ? null
-                                      : 'Only whole numbers are allowed.';
-                                },
-                                onSaved: (newValue) => beanToAdd["altitude"] =
-                                    int.tryParse(newValue ?? ''),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    hintText:
-                                        'What does the coffee taste like...',
-                                    labelText: 'Tasting notes'),
-                                onSaved: (newValue) =>
-                                    beanToAdd["tastingNotes"] = newValue,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: ElevatedButton(
-                                child: const Text('Add'),
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    _formKey.currentState!.save();
-                                    Navigator.of(context).pop();
-                                    print("Saved value: $beanToAdd");
-                                    saveBeans().then((_) {
-                                      setState(() {});
-                                    });
-                                  }
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                builder: (BuildContext context) => addBeanDialog(context, addInitialValue,"Add Bean"),
               );
             },
             label: Text('Add bean'),
@@ -232,4 +99,103 @@ class _BeansState extends State<BeansDisplay> {
       ],
     );
   }
+
+  Widget addBeanDialog(context, Map<String, String> initialValues, String buttonText) => AlertDialog(
+      backgroundColor: prefs.black3,
+      content: Stack(
+        clipBehavior: Clip.none,
+        children: <Widget>[
+          Positioned(
+            right: 0,
+            top: 0,
+            child: InkResponse(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child:Icon(Icons.close, color: prefs.accent2, size: 16,),
+              
+            ),
+          ),
+          Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GetFormField(initialValues, beanToAdd, "name", "Enter bean name", "Name"),
+                GetFormField(initialValues, beanToAdd, "origin", "Enter bean Origin", "Origin"),
+                GetFormField(initialValues, beanToAdd, "process", "Enter the process used", "Process"),
+                GetFormFieldWithValidator(initialValues, beanToAdd, "price", "Enter Bean price/100g", "Price", decimalValidator, (value) => beanToAdd["price"] = double.tryParse(value ?? '') ?? 0.0),
+                GetFormFieldWithValidator(initialValues, beanToAdd, "roastDegree", "Enter roast Degree", "Roast Degree", intValidator,  (newValue) =>beanToAdd["roastDegree"] = int.tryParse(newValue ?? '')),
+                GetFormField(initialValues, beanToAdd, "roaster", "Enter Roaster", "Roaster"),
+                GetFormFieldWithValidator(initialValues, beanToAdd, "altitude", "Enter altitude of cultivation", "Altitude", intValidator,  (newValue) =>beanToAdd["altitude"] = int.tryParse(newValue ?? '')),
+                GetFormField(initialValues, beanToAdd, "tastingNotes", 'What does the coffee taste like...', "Tasting notes"),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    child: Text(buttonText),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
+                        Navigator.of(context).pop();
+                        saveBeans().then((_) {
+                          setState(() {});
+                        });
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+  String? intValidator(value) {
+                      return (value != null &&
+                              RegExp(r'^[0-9]+$').hasMatch(value))
+                          ? null
+                          : 'Only whole numbers are allowed.';
+                    }
+
+  String? decimalValidator(value) {
+                      return (value != null &&
+                              RegExp(r'^[0-9]+(\.[0-9]+)?$')
+                                  .hasMatch(value))
+                          ? null
+                          : 'Only decimal numbers are allowed.';
+                    }
+
+  
+
+  Padding GetFormField(Map<String, String> initialValues, Map<String, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText) {
+    return Padding(
+                padding: const EdgeInsets.all(8),
+                child: TextFormField(
+                  initialValue: initialValues[keyToEdit],
+                  decoration: InputDecoration(
+                      hintText: hintText,
+                      labelText: labelText),
+                  onSaved: (newValue) =>
+                      mapToUpdate[keyToEdit] = newValue,
+                ),
+              );
+
+  
+  }
+
+  Padding GetFormFieldWithValidator(Map<String, String> initialValues, Map<String, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText, FormFieldValidator<String>? validator, FormFieldSetter<String>? onSaved) {
+    return Padding(
+                
+                padding: const EdgeInsets.all(8),
+                child: TextFormField(
+                  validator : validator,
+                  initialValue: initialValues[keyToEdit],
+                  decoration: InputDecoration(
+                      hintText: hintText,
+                      labelText: labelText),
+                  onSaved: onSaved,
+                ),
+              );
+}
 }
