@@ -10,6 +10,7 @@ class Beandialog extends StatelessWidget {
   final String buttonText;
   final Function saveFunction;
   bool formComplete = false;
+  final Userprefs prefs = Userprefs();
 
   Beandialog({
     required this.initialValues,
@@ -97,8 +98,11 @@ class Beandialog extends StatelessWidget {
     return Padding(
                 padding: const EdgeInsets.all(8),
                 child: TextFormField(
+                  style: prefs.smallInputText,
                   initialValue: initialValues[keyToEdit],
                   decoration: InputDecoration(
+                      labelStyle : prefs.smallInputLabel,
+                      counterStyle: prefs.smallInputText,
                       hintText: hintText,
                       labelText: labelText),
                   onSaved: (newValue) =>
@@ -117,9 +121,12 @@ class Beandialog extends StatelessWidget {
                 
                 padding: const EdgeInsets.all(8),
                 child: TextFormField(
+                  style: prefs.smallInputText,
                   validator : validator,
                   initialValue: initialValues[keyToEdit].toString(),
                   decoration: InputDecoration(
+                      labelStyle : prefs.smallInputLabel,
+                      counterStyle: prefs.smallInputText,
                       hintText: hintText,
                       labelText: labelText),
                   onSaved: onSaved,

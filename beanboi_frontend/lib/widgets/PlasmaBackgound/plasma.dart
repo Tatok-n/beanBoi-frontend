@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:simple_animations/simple_animations.dart';
+import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
 
 class Plasma extends StatelessWidget {
+  Userprefs prefs = Userprefs();
   @override
   Widget build(BuildContext context) {
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -13,9 +16,7 @@ class Plasma extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             Color(0xff000000),
-            Color(0xff1d1d1d),
-            Color(0xff303030),
-            Color(0xff161616),
+            Color(0xff000000)
           ],
           stops: [
             0,

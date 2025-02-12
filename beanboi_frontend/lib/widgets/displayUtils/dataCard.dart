@@ -65,7 +65,7 @@ class DataCard extends StatelessWidget {
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: [Icon(Icons.delete), Text("Edit")],
+                        children: [Icon(Icons.edit), Text("Edit")],
                       ),
                     ),
                   ), Padding(
@@ -77,7 +77,7 @@ class DataCard extends StatelessWidget {
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: [Icon(Icons.edit), Text("Delete")],
+                        children: [Icon(Icons.delete), Text("Delete")],
                       ),
                     ),
                   )

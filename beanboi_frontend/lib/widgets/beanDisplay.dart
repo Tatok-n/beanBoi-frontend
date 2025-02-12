@@ -110,7 +110,7 @@ class _BeansState extends State<BeansDisplay> {
           body: isLoading
               ? Center(child: CircularProgressIndicator())
               : beans.isEmpty
-                  ? Center(child: Text("No beans found."))
+                  ? Center(child: Text("No beans?", style: prefs.smallHeading ))
                   : ListView.builder(
                       itemCount: beans.length,
                       itemBuilder: (context, index) {

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class Userprefs {
   bool darkTheme = true;
   Color mainAccent = Color.fromARGB(255, 255, 174, 0);
+  Color mainAccent_dark = Color.fromARGB(255, 32, 22, 0);
+  Color mainAccent_faded = Color.fromARGB(255, 255, 224, 158);
   Color accent2 = Color.fromARGB(255, 255, 134, 54);
   Color accent3 = Color.fromARGB(255, 36, 211, 255);
 
@@ -18,6 +20,8 @@ class Userprefs {
 
   TextStyle get smallHeading => TextStyle(fontFamily: 'Roboto', fontSize: mediumFont, color: white1, fontWeight: FontWeight.bold);
   TextStyle get smallText => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: white1, fontWeight: FontWeight.w300);
-
+  TextStyle get smallInputLabel => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: mainAccent_faded, fontWeight: FontWeight.w300);
+  TextStyle get smallInputText => TextStyle(fontFamily: 'Roboto', fontSize: mediumFont, color: white1, fontWeight: FontWeight.w100);
+  
   
 }
