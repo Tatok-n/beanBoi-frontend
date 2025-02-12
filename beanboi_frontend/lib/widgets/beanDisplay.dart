@@ -3,6 +3,7 @@ import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
 import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
+import 'package:beanboi_frontend/widgets/displayUtils/beanDialog.dart';
 
 class BeansDisplay extends StatefulWidget {
   @override
@@ -15,6 +16,9 @@ class _BeansState extends State<BeansDisplay> {
   List<Map> beans = [];
   late Map<String, dynamic> beanToAdd = new Map();
   late Map<String, dynamic> beanToUpdate = new Map();
+  
+
+
   Map<String, String> addInitialValue = {
     "name": "",
     "origin": "",
@@ -25,8 +29,16 @@ class _BeansState extends State<BeansDisplay> {
     "altitude": "",
     "tastingNotes": ""
   };
+
+  late Beandialog dialog = Beandialog(
+    initialValues: addInitialValue,
+    buttonText: "Add",
+    saveFunction: ()=>{},
+  );
+
   bool isLoading = true;
   Userprefs prefs = Userprefs();
+
 
   @override
   void initState() {
@@ -49,9 +61,9 @@ class _BeansState extends State<BeansDisplay> {
     }
   }
 
-  Future<void> saveBeans() async {
+  Future<void> saveBeans(Map<String, dynamic> bean) async {
     try {
-      await beanCaller.saveBean(beanToAdd, user, );
+      await beanCaller.saveBean(bean, user, );
     } catch (e) {
       print("Error adding beans: $e");
     }
@@ -79,8 +91,12 @@ class _BeansState extends State<BeansDisplay> {
               beanToAdd = {};
               await showDialog<void>(
                 context: context,
-                builder: (BuildContext context) => BeanDialog(context, addInitialValue,beanToAdd,"Add Bean", saveBeans),
+                builder: (BuildContext context) => dialog,
               );
+              if (dialog.formComplete) {
+                addBeans(dialog.getUpdatedMap());
+                dialog.formComplete = false;
+              }
             },
             label: Text('Add bean'),
             icon: Icon(Icons.add),
@@ -114,107 +130,24 @@ class _BeansState extends State<BeansDisplay> {
     );
   }
 
-  Widget BeanDialog(context, Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToEdit, String buttonText, Function saveFunction) => AlertDialog(
-      backgroundColor: prefs.black3,
-      content: Stack(
-        clipBehavior: Clip.none,
-        children: <Widget>[
-          Positioned(
-            right: 0,
-            top: 0,
-            child: InkResponse(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child:Icon(Icons.close, color: prefs.accent2, size: 16,),
-              
-            ),
-          ),
-          Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GetFormField(initialValues, mapToEdit, "name", "Enter bean name", "Name"),
-                GetFormField(initialValues, mapToEdit, "origin", "Enter bean Origin", "Origin"),
-                GetFormField(initialValues, mapToEdit, "process", "Enter the process used", "Process"),
-                GetFormFieldWithValidator(initialValues, mapToEdit, "price", "Enter Bean price/100g", "Price", decimalValidator, (value) => mapToEdit["price"] = double.tryParse(value ?? '') ?? 0.0),
-                GetFormFieldWithValidator(initialValues, mapToEdit, "roastDegree", "Enter roast Degree", "Roast Degree", intValidator,  (newValue) =>mapToEdit["roastDegree"] = int.tryParse(newValue ?? '')),
-                GetFormField(initialValues, mapToEdit, "roaster", "Enter Roaster", "Roaster"),
-                GetFormFieldWithValidator(initialValues, mapToEdit, "altitude", "Enter altitude of cultivation", "Altitude", intValidator,  (newValue) =>mapToEdit["altitude"] = int.tryParse(newValue ?? '')),
-                GetFormField(initialValues, mapToEdit, "tastingNotes", 'What does the coffee taste like...', "Tasting notes"),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: ElevatedButton(
-                    child: Text(buttonText),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        Navigator.of(context).pop();
-                        saveFunction();
-                      }
-                    },
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
 
-  void addBeans() {
-    saveBeans().then((_) {
+  void addBeans(Map<dynamic, dynamic> bean) {
+    Map<String, dynamic> updatedBeans = {
+        "name": bean["name"],
+        "origin": bean["origin"],
+        "process": bean["process"],
+        "price": bean["price"],
+        "roastDegree": bean["roastDegree"],
+        "roaster": bean["roaster"],
+        "altitude": bean["altitude"],
+        "tastingNotes": bean["tastingNotes"],
+      };
+
+    saveBeans(updatedBeans).then((_) {
+      fetchBeans();
       setState(() {});
     });
                           
   }
-
-  String? intValidator(value) {
-                      return (value != null &&
-                              RegExp(r'^[0-9]+$').hasMatch(value))
-                          ? null
-                          : 'Only whole numbers are allowed.';
-                    }
-
-  String? decimalValidator(value) {
-                      return (value != null &&
-                              RegExp(r'^[0-9]+(\.[0-9]+)?$')
-                                  .hasMatch(value))
-                          ? null
-                          : 'Only decimal numbers are allowed.';
-                    }
-
-  
-
-  Padding GetFormField(Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText) {
-    return Padding(
-                padding: const EdgeInsets.all(8),
-                child: TextFormField(
-                  initialValue: initialValues[keyToEdit],
-                  decoration: InputDecoration(
-                      hintText: hintText,
-                      labelText: labelText),
-                  onSaved: (newValue) =>
-                      mapToUpdate[keyToEdit] = newValue,
-                ),
-              );
-
-  
-  }
-
-  Padding GetFormFieldWithValidator(Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText, FormFieldValidator<String>? validator, FormFieldSetter<String>? onSaved) {
-    return Padding(
-                
-                padding: const EdgeInsets.all(8),
-                child: TextFormField(
-                  validator : validator,
-                  initialValue: initialValues[keyToEdit].toString(),
-                  decoration: InputDecoration(
-                      hintText: hintText,
-                      labelText: labelText),
-                  onSaved: onSaved,
-                ),
-              );
 }
-}
+

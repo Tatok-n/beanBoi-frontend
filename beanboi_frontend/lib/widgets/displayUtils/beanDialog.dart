@@ -9,6 +9,7 @@ class Beandialog extends StatelessWidget {
   final Map<dynamic, dynamic> mapToEdit = {};
   final String buttonText;
   final Function saveFunction;
+  bool formComplete = false;
 
   Beandialog({
     required this.initialValues,
@@ -60,6 +61,7 @@ class Beandialog extends StatelessWidget {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         Navigator.of(context).pop();
+                        formComplete = true;
                         //saveFunction();
                       }
                     },

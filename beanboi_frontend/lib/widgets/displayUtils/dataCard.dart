@@ -15,7 +15,7 @@ class DataCard extends StatelessWidget {
   DataCard(this.data, this.updateBeanCallback, this.user, {super.key}) {
     dialog = Beandialog(
       initialValues: data,
-      buttonText: "Save",
+      buttonText: "Update",
       saveFunction: updateBeanCallback,
     );
   }
@@ -44,19 +44,44 @@ class DataCard extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  await showDialog<void>(
-                    context: context,
-                    builder: (BuildContext context) => dialog,
-                  );
-                  updateBeans(dialog.mapToEdit);
-                  updateBeanCallback();
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [Icon(Icons.edit), Text("Edit")],
-                ),
+              child: Row(
+                
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) => dialog,
+                          
+                        );
+                        if (dialog.formComplete) {
+                          updateBeans(dialog.mapToEdit);
+                          dialog.formComplete = false;
+                          updateBeanCallback();
+                        }
+                      
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Icon(Icons.edit), Text("Edit")],
+                      ),
+                    ),
+                  ), Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await deleteBean();
+                        updateBeanCallback();
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Icon(Icons.edit), Text("Delete")],
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
@@ -123,6 +148,15 @@ class DataCard extends StatelessWidget {
       ),
     );
   }
+
+    Future<void> deleteBean() async {
+    try {
+      await beanCaller.deleteBean(user, data["id"]);
+    } catch (e) {
+      print("Error deleting beans: $e");
+    } 
+    }
+
 
     Future<void> updateBeans(beanToUpdate) async {
     try {
