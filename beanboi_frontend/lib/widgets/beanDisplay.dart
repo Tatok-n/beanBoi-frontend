@@ -1,6 +1,5 @@
 import 'package:beanboi_frontend/widgets/PlasmaBackgound/plasma.dart';
 import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
-import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
 import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
@@ -61,9 +60,9 @@ class _BeansState extends State<BeansDisplay> {
 
   Future<void> updateBeans(beanToUpdate) async {
     try {
-      await beanCaller.saveBean(beanToUpdate, user);
+      await beanCaller.updateBean(beanToUpdate, user);
     } catch (e) {
-      print("Error adding beans: $e");
+      print("Error updatingBeans beans: $e");
     }
     await fetchBeans();
   }
@@ -103,9 +102,9 @@ class _BeansState extends State<BeansDisplay> {
                           padding: const EdgeInsets.all(8.0),
                           child: DataCard(
                               beans[index],
-                              BeanDialog(context,beans[index],beanToUpdate,"Update Bean",() {}),(updatedBean) { 
-                                updateBeans(beanToUpdate);
-                                setState(() { beans[index] = updatedBean;});},
+                              () => { 
+                                fetchBeans()},
+                                user
                           ),
                         );
                       },
@@ -152,7 +151,7 @@ class _BeansState extends State<BeansDisplay> {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         Navigator.of(context).pop();
-                        addBeans();
+                        saveFunction();
                       }
                     },
                   ),

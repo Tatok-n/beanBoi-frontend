@@ -4,15 +4,23 @@ import 'dart:ui';
 import 'package:beanboi_frontend/widgets/displayUtils/label.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
-import 'package:simple_animations/simple_animations.dart';
-import 'package:beanboi_frontend/widgets/beanDisplay.dart'; // Import BeanDialog
+import 'package:beanboi_frontend/widgets/displayUtils/beanDialog.dart';
+import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 
 class DataCard extends StatelessWidget {
-  DataCard(this.data, this.dialog, this.updateBeanCallback, {super.key});
-
   final Map<dynamic, dynamic> data;
-  final Widget dialog;
-  final Function(Map<dynamic, dynamic>) updateBeanCallback;
+  late final Beandialog dialog;
+  final String user;
+
+  DataCard(this.data, this.updateBeanCallback, this.user, {super.key}) {
+    dialog = Beandialog(
+      initialValues: data,
+      buttonText: "Save",
+      saveFunction: updateBeanCallback,
+    );
+  }
+  final Function() updateBeanCallback;
+
 
   final Userprefs userprefs = Userprefs();
 
@@ -42,8 +50,8 @@ class DataCard extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) => dialog,
                   );
-                  print("Updated bean: $data");
-                  updateBeanCallback(data);
+                  updateBeans(dialog.mapToEdit);
+                  updateBeanCallback();
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -114,5 +122,26 @@ class DataCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+    Future<void> updateBeans(beanToUpdate) async {
+    try {
+      Map<String, dynamic> updatedBeans = {
+        "name": beanToUpdate["name"],
+        "origin": beanToUpdate["origin"],
+        "process": beanToUpdate["process"],
+        "price": beanToUpdate["price"],
+        "roastDegree": beanToUpdate["roastDegree"],
+        "roaster": beanToUpdate["roaster"],
+        "altitude": beanToUpdate["altitude"],
+        "tastingNotes": beanToUpdate["tastingNotes"],
+        "id" : data["id"],
+        "uid" : data["uid"],
+        "isActive" : data["isActive"]
+      };
+      await beanCaller.updateBean(updatedBeans, user);
+    } catch (e) {
+      print("Error updatingBeans beans: $e");
+    }
   }
 }
