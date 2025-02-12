@@ -6,24 +6,37 @@ class Plasma extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          tileMode: TileMode.mirror,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xff000000),
-            Color(0xff161616),
-          ],
-          stops: [
-            0,
-            0.3333333333333333,
-            0.6666666666666666,
-            1,
-          ],
-        ),
-        backgroundBlendMode: BlendMode.srcOver,
-      ),
-    );
+  decoration: BoxDecoration(
+    gradient: LinearGradient(
+      tileMode: TileMode.mirror,
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Color(0xff362000),
+        Color(0xff0b0700),
+      ],
+      stops: [
+        0,
+        1,
+      ],
+    ),
+    backgroundBlendMode: BlendMode.srcOver,
+  ),
+  child: PlasmaRenderer(
+    type: PlasmaType.infinity,
+    particles: 10,
+    color: Color(0x44ffb192),
+    blur: 1,
+    size: 0.45,
+    speed: 1,
+    offset: 0,
+    blendMode: BlendMode.plus,
+    particleType: ParticleType.atlas,
+    variation1: 0,
+    variation2: 0,
+    variation3: 0,
+    rotation: 0,
+  ),
+);
   }
 }
