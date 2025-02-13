@@ -33,7 +33,6 @@ class _BeansState extends State<BeansDisplay> {
   late Beandialog dialog = Beandialog(
     initialValues: addInitialValue,
     buttonText: "Add",
-    saveFunction: ()=>{},
   );
 
   bool isLoading = true;

@@ -14,14 +14,18 @@ class Userprefs {
 
   Color white1 = Color.fromARGB(255, 233, 233, 233);
 
-  double bigFont = 24;
-  double mediumFont = 18;
-  double smallFont = 16;
+    double baseFontSize = 16;
+
+  double get bigFont => baseFontSize * 1.5;
+  double get mediumFont => baseFontSize * 1.125;
+  double get smallFont => baseFontSize;
 
   TextStyle get smallHeading => TextStyle(fontFamily: 'Roboto', fontSize: mediumFont, color: white1, fontWeight: FontWeight.bold);
   TextStyle get smallText => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: white1, fontWeight: FontWeight.w300);
   TextStyle get smallInputLabel => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: mainAccent_faded, fontWeight: FontWeight.w300);
   TextStyle get smallInputText => TextStyle(fontFamily: 'Roboto', fontSize: mediumFont, color: white1, fontWeight: FontWeight.w100);
+
+
   
   
 }
