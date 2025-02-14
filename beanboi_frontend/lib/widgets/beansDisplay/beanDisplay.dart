@@ -1,9 +1,10 @@
 import 'package:beanboi_frontend/widgets/PlasmaBackgound/plasma.dart';
-import 'package:beanboi_frontend/widgets/displayUtils/dataCard.dart';
-import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
+import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanCard.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/dataCard.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
-import 'package:beanboi_frontend/widgets/displayUtils/beanDialog.dart';
+import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanDialog.dart';
 
 class BeansDisplay extends StatefulWidget {
   @override
@@ -115,7 +116,7 @@ class _BeansState extends State<BeansDisplay> {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: DataCard(
+                          child: BeanCard(
                               beans[index],
                               () => { 
                                 fetchBeans()},

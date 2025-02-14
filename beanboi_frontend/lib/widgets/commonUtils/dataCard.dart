@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:beanboi_frontend/widgets/displayUtils/label.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/label.dart';
 import 'package:flutter/material.dart';
-import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
-import 'package:beanboi_frontend/widgets/displayUtils/beanDialog.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
+import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanDialog.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 
 class DataCard extends StatelessWidget {
@@ -12,8 +12,9 @@ class DataCard extends StatelessWidget {
   late final Beandialog dialog;
   final String user;
   final Function() updateBeanCallback;
+  late List<Widget> children = [];
 
-  DataCard(this.data, this.updateBeanCallback, this.user, {super.key}) {
+  DataCard(this.data, this.updateBeanCallback, this.user, this.children, {super.key}) {
     dialog = Beandialog(
       initialValues: data,
       buttonText: "Update",
@@ -24,10 +25,6 @@ class DataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        bool isSmallScreen = constraints.maxWidth < 500;
-
         return Container(
           decoration: BoxDecoration(
             color: userprefs.colorScheme.surfaceContainerLow,
@@ -39,26 +36,10 @@ class DataCard extends StatelessWidget {
               data["name"],
               style: userprefs.onPrimaryContainerSmallHeading,
             ),
-            children: [
-              _buildActionButtons(context),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                  ),
-                  padding: const EdgeInsets.all(16.0),
-                  child: isSmallScreen ? _buildSingleColumnLayout() : _buildTwoColumnLayout(),
-                ),
-              ),
-            ],
+            children: children,
           ),
         );
-      },
-    );
+
   }
 
 

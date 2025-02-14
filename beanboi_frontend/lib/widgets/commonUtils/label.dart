@@ -1,5 +1,5 @@
 
-import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 
 class Label extends StatelessWidget {  
