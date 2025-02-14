@@ -26,7 +26,7 @@ class BeanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DataCard(data, updateBeanCallback, user, [
+    return DataCard(data, user, [
       _buildActionButtons(context),
       getContent(),
       

@@ -1,4 +1,4 @@
-import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:simple_animations/simple_animations.dart';
