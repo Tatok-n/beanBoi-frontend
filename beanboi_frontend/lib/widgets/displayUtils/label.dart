@@ -39,7 +39,7 @@ class labelValue extends StatelessWidget {
     return Text(
       value,
       textAlign: TextAlign.right,
-      style: userprefs.smallText,
+      style: userprefs.inverseSurfaceTextS,
     );
   }
 }
@@ -60,7 +60,7 @@ class labelText extends StatelessWidget {
     return Expanded(
       child: Text(
         name + ":",
-        style : userprefs.smallHeading,
+        style : userprefs.inverseSurfaceTextS,
         textAlign: TextAlign.left,
       ),
     );

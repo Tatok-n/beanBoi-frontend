@@ -1,8 +1,10 @@
+import 'package:beanboi_frontend/widgets/displayUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class Plasma extends StatelessWidget {
+  Userprefs userprefs = Userprefs();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,7 +27,7 @@ class Plasma extends StatelessWidget {
   child: PlasmaRenderer(
     type: PlasmaType.infinity,
     particles: 10,
-    color: Color(0x44ffb192),
+    color: userprefs.colorScheme.secondary,
     blur: 1,
     size: 0.45,
     speed: 1,

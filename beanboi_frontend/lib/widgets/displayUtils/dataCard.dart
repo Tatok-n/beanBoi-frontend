@@ -30,17 +30,14 @@ class DataCard extends StatelessWidget {
 
         return Container(
           decoration: BoxDecoration(
-            color: const Color.fromARGB(125, 43, 43, 43),
+            color: userprefs.colorScheme.surfaceContainerLow,
             borderRadius: const BorderRadius.all(Radius.circular(20)),
-            border: Border.all(color: userprefs.mainAccent, width: 2),
+            border: Border.all(color: userprefs.colorScheme.secondary, width: 2),
           ),
           child: ExpansionTile(
             title: Text(
               data["name"],
-              style: TextStyle(
-                color: userprefs.mainAccent,
-                fontSize: userprefs.mediumFont,
-              ),
+              style: userprefs.onPrimaryContainerSmallHeading,
             ),
             children: [
               _buildActionButtons(context),

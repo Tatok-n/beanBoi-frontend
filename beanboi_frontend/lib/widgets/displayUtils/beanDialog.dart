@@ -22,7 +22,7 @@ class Beandialog extends StatelessWidget {
     final _formKey = GlobalKey<FormState>();
     final prefs = Userprefs();
     return AlertDialog(
-      backgroundColor: prefs.black3,
+      backgroundColor: prefs.colorScheme.surfaceBright,
       content: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets. only(bottom: 8.0),
@@ -38,7 +38,7 @@ class Beandialog extends StatelessWidget {
                   },
                   child: Icon(
                     Icons.close,
-                    color: prefs.accent2,
+                    color: prefs.colorScheme.onSurface,
                     size: 16,
                   ),
                 ),
@@ -101,12 +101,13 @@ class Beandialog extends StatelessWidget {
     return Padding(
                 padding: const EdgeInsets.all(8),
                 child: TextFormField(
-                  style: prefs.smallInputText,
+                  style: prefs.smallInputTextSurface,
                   initialValue: initialValues[keyToEdit],
                   decoration: InputDecoration(
-                      labelStyle : prefs.smallInputLabel,
-                      counterStyle: prefs.smallInputText,
+                      labelStyle : prefs.smallInputLabelSurface,
+                      counterStyle: prefs.smallInputTextSurface,
                       hintText: hintText,
+                      hintStyle: prefs.smallInputHintSurface,
                       labelText: labelText),
                   onSaved: (newValue) =>
                       mapToUpdate[keyToEdit] = newValue,
@@ -124,13 +125,14 @@ class Beandialog extends StatelessWidget {
                 
                 padding: const EdgeInsets.all(8),
                 child: TextFormField(
-                  style: prefs.smallInputText,
+                  style: prefs.smallInputTextSurface,
                   validator : validator,
                   initialValue: initialValues[keyToEdit].toString(),
                   decoration: InputDecoration(
-                      labelStyle : prefs.smallInputLabel,
-                      counterStyle: prefs.smallInputText,
+                      labelStyle : prefs.smallInputLabelSurface,
+                      counterStyle: prefs.smallInputTextSurface,
                       hintText: hintText,
+                      hintStyle: prefs.smallInputHintSurface,
                       labelText: labelText),
                   onSaved: onSaved,
                 ),
