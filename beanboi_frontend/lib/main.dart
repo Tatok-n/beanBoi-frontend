@@ -3,6 +3,7 @@ import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'controllers/beanCaller.dart';
+import 'widgets/homeScreen/homeScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: userprefs.mainAccent),
         useMaterial3: true,
       ),
-      home: BeansDisplay()
+      home: HomeScreen()
     );
   }
   

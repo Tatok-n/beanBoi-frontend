@@ -101,12 +101,6 @@ class _BeansState extends State<BeansDisplay> {
             label: Text('Add bean'),
             icon: Icon(Icons.add),
           ),
-          appBar: AppBar(
-            title: Text(
-              "BEANS",
-              style: TextStyle(fontSize: prefs.bigFont),
-            ),
-          ),
           body: isLoading
               ? Center(child: CircularProgressIndicator())
               : beans.isEmpty
