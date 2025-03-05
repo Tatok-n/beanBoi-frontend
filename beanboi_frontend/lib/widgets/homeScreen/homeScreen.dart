@@ -10,42 +10,50 @@ class HomeScreen extends StatelessWidget {
   {'name' : 'Recipes', 'route' : _routeToBeans()},
   {'name' : 'Brews', 'route' : _routeToBeans()},
   {'name' : 'Stats', 'route' : _routeToBeans()}];
+
+
+
+
   @override
   Widget build(BuildContext context) {
+
+    int screenIndex = 0;
+
+      void handleScreenChanged(int selectedScreen) {
+    Navigator.of(context).push(cardNames[selectedScreen]["route"]);
+  }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Screen'),
       ),
       body: Center(
-        child: GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: 3.0,
-          children: 
-            cardNames.map((card) => Container(
-              padding: const EdgeInsets.all(4), 
-              child: SizedBox(
-                height: 100,
-                child: Card(
-                  color: prefs.colorScheme.primaryContainer,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min, 
-                    children: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(card["route"]);
-                        },
-                        style: TextButton.styleFrom(
-                          textStyle: const TextStyle(fontSize: 20), 
-                        ),
-                        child: Text(card["name"], style: prefs.BigboiTextOnPrimaryContainer, textAlign: TextAlign.center,),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )).toList()
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Welcome to BeanBoi!'),
+          
+          ],
         ),
       ),
+      drawer:  NavigationDrawer(
+        onDestinationSelected: handleScreenChanged,
+        selectedIndex: screenIndex,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+            child: Text('Header', style: Theme.of(context).textTheme.titleSmall),
+          ),
+          ...cardNames.map((Map destination) {
+            return NavigationDrawerDestination(
+              label: Text(destination['name']),
+              icon: Icon(Icons.abc),
+              selectedIcon:  Icon(Icons.abc),
+            );
+          }),
+          const Padding(padding: EdgeInsets.fromLTRB(28, 16, 28, 10), child: Divider()),
+        ],
+      )
     );
   }
 }
