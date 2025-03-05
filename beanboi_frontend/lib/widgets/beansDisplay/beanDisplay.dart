@@ -83,7 +83,7 @@ class _BeansState extends State<BeansDisplay> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Plasma(),
+        PlasmaBg(),
         Scaffold(
           backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton.extended(

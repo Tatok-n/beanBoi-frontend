@@ -24,6 +24,7 @@ class HomeScreen extends StatelessWidget {
   }
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Home Screen'),
       ),

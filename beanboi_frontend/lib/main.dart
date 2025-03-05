@@ -1,4 +1,5 @@
 import 'package:beanboi_frontend/widgets/beansDisplay/beanDisplay.dart';
+import 'package:beanboi_frontend/widgets/PlasmaBackgound/plasma.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: userprefs.mainAccent),
         useMaterial3: true,
       ),
-      home: HomeScreen()
+      home: Stack(
+        children:[PlasmaBg(),HomeScreen()])
     );
   }
   

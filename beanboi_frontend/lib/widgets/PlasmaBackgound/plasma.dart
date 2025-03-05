@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:simple_animations/simple_animations.dart';
 
-class Plasma extends StatelessWidget {
+class PlasmaBg extends StatelessWidget {
   Userprefs userprefs = Userprefs();
   @override
   Widget build(BuildContext context) {
