@@ -5,6 +5,7 @@ import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanDialog.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/navBar.dart';
 
 class BeansDisplay extends StatefulWidget {
   @override
@@ -85,6 +86,10 @@ class _BeansState extends State<BeansDisplay> {
       children: [
         PlasmaBg(),
         Scaffold(
+          appBar: AppBar(
+            title: Text('Beans'),
+          ),
+          drawer: navBar(),
           backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {

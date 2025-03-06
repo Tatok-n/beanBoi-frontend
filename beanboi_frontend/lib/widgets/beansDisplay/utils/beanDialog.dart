@@ -22,7 +22,6 @@ class Beandialog extends StatelessWidget {
     final _formKey = GlobalKey<FormState>();
     final prefs = Userprefs();
     return AlertDialog(
-      backgroundColor: prefs.colorScheme.surfaceBright,
       content: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets. only(bottom: 8.0),
@@ -38,7 +37,6 @@ class Beandialog extends StatelessWidget {
                   },
                   child: Icon(
                     Icons.close,
-                    color: prefs.colorScheme.onSurface,
                     size: 16,
                   ),
                 ),
@@ -103,12 +101,9 @@ class Beandialog extends StatelessWidget {
                 child: TextFormField(
                   style: prefs.smallInputTextSurface,
                   initialValue: initialValues[keyToEdit],
-                  decoration: InputDecoration(
-                      labelStyle : prefs.smallInputLabelSurface,
-                      counterStyle: prefs.smallInputTextSurface,
-                      hintText: hintText,
-                      hintStyle: prefs.smallInputHintSurface,
-                      labelText: labelText),
+                   decoration: InputDecoration(
+                       hintText: hintText,
+                       labelText: labelText),
                   onSaved: (newValue) =>
                       mapToUpdate[keyToEdit] = newValue,
                 ),
@@ -129,10 +124,7 @@ class Beandialog extends StatelessWidget {
                   validator : validator,
                   initialValue: initialValues[keyToEdit].toString(),
                   decoration: InputDecoration(
-                      labelStyle : prefs.smallInputLabelSurface,
-                      counterStyle: prefs.smallInputTextSurface,
                       hintText: hintText,
-                      hintStyle: prefs.smallInputHintSurface,
                       labelText: labelText),
                   onSaved: onSaved,
                 ),

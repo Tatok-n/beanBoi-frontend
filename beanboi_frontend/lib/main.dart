@@ -17,19 +17,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: userprefs.mainAccent),
-        useMaterial3: true,
-      ),
-      home: Stack(
-        children:[PlasmaBg(),HomeScreen()])
+    ColorScheme colorScheme = ColorScheme.fromSeed(
+      seedColor: userprefs.mainAccent,
+      brightness: Brightness.dark,
     );
+
+    return MaterialApp(
+        title: 'Flutter',
+        theme: ThemeData(
+          colorScheme: colorScheme,
+          useMaterial3: true,
+        ),
+        home: Stack(children: [PlasmaBg(), HomeScreen()]));
   }
-  
 }
-
-
-
-

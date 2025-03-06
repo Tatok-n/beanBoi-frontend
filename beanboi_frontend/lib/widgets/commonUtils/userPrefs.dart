@@ -18,9 +18,9 @@ class Userprefs {
   TextStyle get onPrimaryContainerSmallHeading => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold);
   
 
-  TextStyle get smallInputTextSurface => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: colorScheme.onSurface, fontWeight: FontWeight.w100);
-  TextStyle get smallInputLabelSurface => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w300);
-  TextStyle get smallInputHintSurface => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w100);
+  TextStyle get smallInputTextSurface => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, fontWeight: FontWeight.w100);
+  TextStyle get smallInputLabelSurface => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, fontWeight: FontWeight.w300);
+  TextStyle get smallInputHintSurface => TextStyle(fontFamily: 'Roboto', fontSize: smallFont, fontWeight: FontWeight.w100);
 
 
   TextStyle get smallHeading => TextStyle(fontFamily: 'Roboto', fontSize: mediumFont, color: colorScheme.onSecondary, fontWeight: FontWeight.bold);
