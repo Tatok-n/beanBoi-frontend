@@ -3,6 +3,8 @@ import 'package:beanboi_frontend/widgets/homeScreen/homeScreen.dart';
 import 'package:flutter/material.dart';
 
 import '../beansDisplay/beanDisplay.dart';
+import '../grinderDisplay/grinderDisplay.dart';
+
 
 class navBar extends StatelessWidget {
   Route _routeToHome() {
@@ -13,6 +15,11 @@ class navBar extends StatelessWidget {
   Route _routeToBeans() {
     return makeAnimatedRoute(BeansDisplay());
   }
+
+    Route _routeToGrinders() {
+    return makeAnimatedRoute(GrinderDisplay());
+  }
+
 
   PageRouteBuilder<dynamic> makeAnimatedRoute(Widget destination) {
      return PageRouteBuilder(
@@ -35,7 +42,7 @@ class navBar extends StatelessWidget {
     List<Map<String, dynamic>> cardNames = [
       {'name': 'Beans', 'route': _routeToBeans()},
       {'name': 'Bean Purchases', 'route': _routeToBeans()},
-      {'name': 'Grinders', 'route': _routeToBeans()},
+      {'name': 'Grinders', 'route': _routeToGrinders()},
       {'name': 'Recipes', 'route': _routeToBeans()},
       {'name': 'Brews', 'route': _routeToBeans()},
       {'name': 'Stats', 'route': _routeToBeans()},
