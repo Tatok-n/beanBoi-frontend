@@ -9,16 +9,11 @@ import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 
 class DataCard extends StatelessWidget {
   final Map<dynamic, dynamic> data;
-  late final Beandialog dialog;
+  late final Widget dialog;
   final String user;
   late List<Widget> children = [];
 
-  DataCard(this.data, this.user, this.children, {super.key}) {
-    dialog = Beandialog(
-      initialValues: data,
-      buttonText: "Update",
-    );
-  }
+  DataCard(this.data, this.user, this.children,{super.key});
 
   final Userprefs userprefs = Userprefs();
 

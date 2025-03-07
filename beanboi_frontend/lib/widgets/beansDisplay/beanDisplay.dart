@@ -1,6 +1,5 @@
 import 'package:beanboi_frontend/widgets/PlasmaBackgound/plasma.dart';
 import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanCard.dart';
-import 'package:beanboi_frontend/widgets/commonUtils/dataCard.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
