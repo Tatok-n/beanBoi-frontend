@@ -52,10 +52,12 @@ class navBar extends StatelessWidget {
 
     int screenIndex = 0;
     void handleScreenChanged(int selectedScreen) {
+      screenIndex = selectedScreen;
       Navigator.of(context).push(cardNames[selectedScreen]["route"]);
     }
 
     return NavigationDrawer(
+      
       onDestinationSelected: handleScreenChanged,
       selectedIndex: screenIndex,
       children: <Widget>[

@@ -41,6 +41,17 @@ Future<String> sendPostWithBody(String path, Object body) async {
     }
 }
 
+Future<String> sendPutWithBody(String path, Object body) async {
+  final response = await http.put(Uri.parse(baseUrl + path),
+   headers: {'Content-Type': 'application/json'},
+   body: jsonEncode(body));
+      if (response.statusCode == 200) {
+        return response.body;
+    } else {
+        return "Error ${response.statusCode}: ${response.body}";
+    }
+}
+
 Future<void> sendDelete(String path) async {
   final response = await http.delete(Uri.parse(baseUrl + path));
   if (response.statusCode != 200) {
