@@ -1,7 +1,8 @@
 import 'package:beanboi_frontend/widgets/PlasmaBackgound/plasma.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/navBar.dart';
-import 'package:beanboi_frontend/controllers/grinderCaller.dart' as grinderCaller;
+import 'package:beanboi_frontend/controllers/grinderCaller.dart'
+    as grinderCaller;
 
 import '../commonUtils/userPrefs.dart';
 import 'utils/grinderCard.dart';
@@ -10,26 +11,22 @@ import 'utils/grinderDialog.dart';
 class GrinderDisplay extends StatefulWidget {
   @override
   _GrinderState createState() => _GrinderState();
+
+
 }
 
 class _GrinderState extends State<GrinderDisplay> {
+
   final _formKey = GlobalKey<FormState>();
   String user = "user0";
   List<Map> grinders = [];
   late Map<String, dynamic> grinderToAdd = new Map();
   late Map<String, dynamic> grinderToUpdate = new Map();
 
-
-    Map<String, String> addInitialValue = {
+  Map<String, String> addInitialValue = {
     "name": "",
-    "origin": "",
-    "process": "",
-    "price": "",
-    "roastDegree": "",
-    "roaster": "",
-    "altitude": "",
-    "tastingNotes": ""
   };
+
 
   late GrinderDialog dialog = GrinderDialog(
     initialValues: addInitialValue,
@@ -39,8 +36,7 @@ class _GrinderState extends State<GrinderDisplay> {
   bool isLoading = true;
   Userprefs prefs = Userprefs();
 
-
-    @override
+  @override
   void initState() {
     super.initState();
     fetchGrinders();
@@ -63,7 +59,10 @@ class _GrinderState extends State<GrinderDisplay> {
 
   Future<void> saveGrinder(Map<String, dynamic> grinder) async {
     try {
-      await grinderCaller.saveGrinder(grinder, user, );
+      await grinderCaller.saveGrinder(
+        grinder,
+        user,
+      );
     } catch (e) {
       print("Error adding beans: $e");
     }
@@ -79,7 +78,6 @@ class _GrinderState extends State<GrinderDisplay> {
     await fetchGrinders();
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -93,34 +91,35 @@ class _GrinderState extends State<GrinderDisplay> {
           backgroundColor: Colors.transparent,
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {
-              grinderToAdd = {};
-              await showDialog<void>(
+              final result = await showDialog<Map<String, dynamic>>(
                 context: context,
-                builder: (BuildContext context) => dialog,
+                builder: (BuildContext context) => GrinderDialog(
+                  initialValues: addInitialValue,
+                  buttonText: "Add",
+                ),
               );
-              if (dialog.formComplete) {
-                addGrinder(dialog.getUpdatedMap());
-                dialog.formComplete = false;
+
+              if (result!=null) {
+                print("Adding grinder");
+                addGrinder(result);       
               }
             },
+            
             label: Text('Add grinder'),
             icon: Icon(Icons.add),
           ),
           body: isLoading
               ? Center(child: CircularProgressIndicator())
               : grinders.isEmpty
-                  ? Center(child: Text("No grinders?", style: prefs.smallHeading ))
+                  ? Center(
+                      child: Text("No grinders?", style: prefs.smallHeading))
                   : ListView.builder(
                       itemCount: grinders.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: GrinderCard(
-                              grinders[index],
-                              () => { 
-                                fetchGrinders()},
-                                user
-                          ),
+                              grinders[index], () => {fetchGrinders()}, user),
                         );
                       },
                     ),
@@ -130,23 +129,17 @@ class _GrinderState extends State<GrinderDisplay> {
   }
 
   void addGrinder(Map<dynamic, dynamic> grinder) {
-    Map<String, dynamic> updatedBeans = {
-        "name": grinder["name"],
-        "origin": grinder["origin"],
-        "process": grinder["process"],
-        "price": grinder["price"],
-        "roastDegree": grinder["roastDegree"],
-        "roaster": grinder["roaster"],
-        "altitude": grinder["altitude"],
-        "tastingNotes": grinder["tastingNotes"],
-      };
+    Map<String, dynamic> updatedGrinder = {
+      "name": grinder["name"],
+      "settings": grinder["settings"],
+      "uid": user,
+      "id": grinder["id"],
+      "isActive": grinder["isActive"]
+    };
 
-    saveGrinder(updatedBeans).then((_) {
+    saveGrinder(updatedGrinder).then((_) {
       fetchGrinders();
       setState(() {});
     });
-                          
   }
-
 }
-

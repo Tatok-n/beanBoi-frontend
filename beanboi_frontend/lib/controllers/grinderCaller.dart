@@ -11,7 +11,7 @@ Future<List<Map<String,dynamic>>> getAllGrinders(String UID) async {
 }
 
 Future<void> saveGrinder (Map<String, dynamic> map, String UID) async {
-  String saveBeanURL = "/users/"+UID+"/grinders/";
+  String saveBeanURL = "/users/"+UID+"/grinders";
   await manager.sendPutWithBody(saveBeanURL, map);
 } 
 
