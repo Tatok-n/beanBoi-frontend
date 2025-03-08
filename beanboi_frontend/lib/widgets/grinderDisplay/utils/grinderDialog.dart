@@ -25,8 +25,9 @@ class _GrinderDialogState extends State<GrinderDialog> {
     "isActive": true,
     "settings": "",
   };
+  List<Widget> settingWidgets = [];
 
-  int inputStyle = 0; // This needs to trigger rebuilds
+  List<int> inputStyles = [0];
   List<Map<String, dynamic>> settingOptions = [{}];
 
   @override
@@ -55,7 +56,21 @@ class _GrinderDialogState extends State<GrinderDialog> {
                   children: <Widget>[
                     GetFormField(widget.initialValues, mapToAdd, "name",
                         "Enter grinder name", "Name"),
-                    GetSettingSelector(0),
+                    Column(
+                      children: [
+                        for (int i = 0; i < settingOptions.length; i++)
+                          GetSettingSelector(i),
+                        ElevatedButton(
+                          child: Icon(Icons.add),
+                          onPressed: () {
+                            setState(() {
+                              settingOptions.add({"type": "A"});
+                              inputStyles.add(0);
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
@@ -81,6 +96,7 @@ class _GrinderDialogState extends State<GrinderDialog> {
   }
 
   Widget GetSettingSelector(int index) {
+    int currentIndex = index;
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -92,31 +108,44 @@ class _GrinderDialogState extends State<GrinderDialog> {
                     ? "Numeric"
                     : "Decimal",
             items: const [
-              DropdownMenuItem(value: "Alphabetical", child: Text("Alphabetical")),
+              DropdownMenuItem(
+                  value: "Alphabetical", child: Text("Alphabetical")),
               DropdownMenuItem(value: "Decimal", child: Text("Decimal")),
               DropdownMenuItem(value: "Numeric", child: Text("Numeric")),
             ],
             onChanged: (String? value) {
-              setState(() { 
-                if (value == "Alphabetical") {
-                  inputStyle = 0;
-                  settingOptions[index]["type"] = "A";
-                } else if (value == "Decimal") {
-                  inputStyle = 1;
-                  settingOptions[index]["type"] = "F";
-                  settingOptions[index]["precision"] = "0.1";
-                } else {
-                  inputStyle = 2;
-                  settingOptions[index]["type"] = "I";
-                }
-              });
+              if (value != null) {
+                setState(() {
+                  List<Map<String, dynamic>> newOptions =
+                      List.from(settingOptions);
+
+                  newOptions[index] = {
+                    ...newOptions[index],
+                    "type": value == "Alphabetical"
+                        ? "A"
+                        : value == "Decimal"
+                            ? "F"
+                            : "I",
+                  };
+
+                  if (value == "Decimal") {
+                    newOptions[index]["precision"] = "0.1";
+                    inputStyles[index] = 1;
+                  } else if (value == "Numeric") {
+                    inputStyles[index] = 2;
+                  } else {
+                    inputStyles[index] = 0;
+                  }
+
+                  settingOptions = newOptions;
+                });
+              }
             },
           ),
-          _getInputDelimitors(inputStyle, index),
+          _getInputDelimitors(inputStyles[index], index),
         ],
       ),
     );
-
   }
 
   Widget _getInputDelimitors(int inputStyle, int index) {
@@ -168,7 +197,17 @@ class _GrinderDialogState extends State<GrinderDialog> {
                     DropdownMenuItem(value: "0.01", child: Text("0.01")),
                   ],
                   onChanged: (String? value) {
-                      settingOptions[index]["precision"] = value;
+                    if (value != null) {
+                      setState(() {
+                        List<Map<String, dynamic>> newOptions =
+                            List.from(settingOptions);
+                        newOptions[index] = {
+                          ...newOptions[index],
+                          "precision": value
+                        };
+                        settingOptions = newOptions;
+                      });
+                    }
                   },
                 ),
               ],
@@ -251,8 +290,4 @@ class _GrinderDialogState extends State<GrinderDialog> {
         ? null
         : 'Only single letters are allowed.';
   }
-
-
 }
-
-
