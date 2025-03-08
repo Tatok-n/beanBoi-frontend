@@ -3,38 +3,31 @@ import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:beanboi_frontend/controllers/grinderCaller.dart'
     as grinderCaller;
 
-class GrinderDialog extends StatelessWidget {
+class GrinderDialog extends StatefulWidget {
   final Map<dynamic, dynamic> initialValues;
   final String buttonText;
- 
 
   GrinderDialog({
     required this.initialValues,
     required this.buttonText,
   });
 
+  @override
+  _GrinderDialogState createState() => _GrinderDialogState();
+}
 
+class _GrinderDialogState extends State<GrinderDialog> {
   bool formComplete = false;
   final _formKey = GlobalKey<FormState>();
   final Userprefs prefs = Userprefs();
   final Map<String, dynamic> mapToAdd = {
     "name": "",
     "isActive": true,
-    "settings" : "",
+    "settings": "",
   };
 
-  List<Map> getUpdatedMap() {
-    return settingOptions;
-  }
-
-  int inputStyle = 0;
-  List<Map<String, dynamic>> settingOptions = [
-    {
-      "type": "A",
-      "startNumerator": "A",
-      "endNumerator": "Z",
-    }
-  ];
+  int inputStyle = 0; // This needs to trigger rebuilds
+  List<Map<String, dynamic>> settingOptions = [{}];
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +53,13 @@ class GrinderDialog extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    GetFormField(initialValues, mapToAdd, "name",
+                    GetFormField(widget.initialValues, mapToAdd, "name",
                         "Enter grinder name", "Name"),
                     GetSettingSelector(0),
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
-                        child: Text(buttonText),
+                        child: Text(widget.buttonText),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
@@ -96,33 +89,34 @@ class GrinderDialog extends StatelessWidget {
             value: settingOptions[index]["type"] == "A"
                 ? "Alphabetical"
                 : settingOptions[index]["type"] == "I"
-                    ? "Decimal"
-                    : "Numeric",
+                    ? "Numeric"
+                    : "Decimal",
             items: const [
-              DropdownMenuItem(
-                  value: "Alphabetical", child: Text("Alphabetical")),
+              DropdownMenuItem(value: "Alphabetical", child: Text("Alphabetical")),
               DropdownMenuItem(value: "Decimal", child: Text("Decimal")),
               DropdownMenuItem(value: "Numeric", child: Text("Numeric")),
             ],
             onChanged: (String? value) {
-             
+              setState(() { 
                 if (value == "Alphabetical") {
                   inputStyle = 0;
                   settingOptions[index]["type"] = "A";
                 } else if (value == "Decimal") {
                   inputStyle = 1;
-                  settingOptions[index]["type"] = "I";
+                  settingOptions[index]["type"] = "F";
+                  settingOptions[index]["precision"] = "0.1";
                 } else {
                   inputStyle = 2;
-                  settingOptions[index]["type"] = "F";
+                  settingOptions[index]["type"] = "I";
                 }
-              
+              });
             },
           ),
           _getInputDelimitors(inputStyle, index),
         ],
       ),
     );
+
   }
 
   Widget _getInputDelimitors(int inputStyle, int index) {
@@ -174,9 +168,7 @@ class GrinderDialog extends StatelessWidget {
                     DropdownMenuItem(value: "0.01", child: Text("0.01")),
                   ],
                   onChanged: (String? value) {
-                   
-                      settingOptions[index]["precision"] = double.parse(value!);
-                    
+                      settingOptions[index]["precision"] = value;
                   },
                 ),
               ],
@@ -234,7 +226,7 @@ class GrinderDialog extends StatelessWidget {
           child: TextFormField(
             style: prefs.smallInputTextSurface,
             validator: validator,
-            initialValue: initialValues[keyToEdit]?.toString() ?? "",
+            initialValue: widget.initialValues[keyToEdit]?.toString() ?? "",
             decoration: InputDecoration(
               hintText: hintText,
               labelText: labelText,
