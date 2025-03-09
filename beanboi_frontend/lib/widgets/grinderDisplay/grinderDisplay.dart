@@ -19,19 +19,13 @@ class _GrinderState extends State<GrinderDisplay> {
 
   final _formKey = GlobalKey<FormState>();
   String user = "user0";
-  List<Map> grinders = [];
+  List<Map<String, dynamic>> grinders = [];
   late Map<String, dynamic> grinderToAdd = new Map();
   late Map<String, dynamic> grinderToUpdate = new Map();
 
   Map<String, String> addInitialValue = {
     "name": "",
   };
-
-
-  late GrinderDialog dialog = GrinderDialog(
-    initialValues: addInitialValue,
-    buttonText: "Add",
-  );
 
   bool isLoading = true;
   Userprefs prefs = Userprefs();
@@ -46,7 +40,7 @@ class _GrinderState extends State<GrinderDisplay> {
     try {
       List<Map> fetchedGrinders = await grinderCaller.getAllGrinders(user);
       setState(() {
-        grinders = fetchedGrinders;
+        grinders = List<Map<String, dynamic>>.from(fetchedGrinders);
         isLoading = false;
       });
     } catch (e) {
@@ -96,6 +90,7 @@ class _GrinderState extends State<GrinderDisplay> {
                 builder: (BuildContext context) => GrinderDialog(
                   initialValues: addInitialValue,
                   buttonText: "Add",
+                  grinderToUpdate: {},
                 ),
               );
 

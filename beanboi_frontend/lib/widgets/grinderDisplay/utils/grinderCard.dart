@@ -8,17 +8,20 @@ import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanDialog.dart';
 import 'package:beanboi_frontend/controllers/grinderCaller.dart' as grinderCaller;
 
+import 'grinderDialog.dart';
+
 class GrinderCard extends StatelessWidget {
 
-  final Map<dynamic, dynamic> data;
-  late final Beandialog dialog;
+  final Map<String, dynamic> data;
+  late final GrinderDialog dialog;
   final String user;
   final Function() updateBeanCallback;
 
   GrinderCard(this.data, this.updateBeanCallback, this.user, {super.key}) {
-    dialog = Beandialog(
+    dialog = GrinderDialog(
       initialValues: data,
       buttonText: "Update",
+      grinderToUpdate: data,
     );
   }
 
@@ -65,16 +68,21 @@ class GrinderCard extends StatelessWidget {
         child: Row(
           children: [
             _buildActionButton(Icons.edit, "Edit", () async {
-              await showDialog<void>(
+              print(data);
+              final result = await showDialog<Map<String, dynamic>>(
                 context: context,
-                builder: (BuildContext context) => dialog,
+                builder: (BuildContext context) => GrinderDialog(
+                  initialValues: data,
+                  buttonText: "Add",
+                  grinderToUpdate: data,
+                ),
               );
-              if (dialog.formComplete) {
-                updateGrinder(dialog.mapToEdit);
-                dialog.formComplete = false;
-                updateBeanCallback();
+
+              if (result!=null) {
+                print("Updating grinder");
+                updateGrinder(result);       
               }
-            }),
+            },),
             _buildActionButton(Icons.delete, "Delete", () async {
               await deleteGrinder();
               updateBeanCallback();

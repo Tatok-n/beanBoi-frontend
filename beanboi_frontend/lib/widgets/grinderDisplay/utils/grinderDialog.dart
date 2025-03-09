@@ -6,10 +6,12 @@ import 'package:beanboi_frontend/controllers/grinderCaller.dart'
 class GrinderDialog extends StatefulWidget {
   final Map<dynamic, dynamic> initialValues;
   final String buttonText;
+  Map<String, dynamic> grinderToUpdate;
 
   GrinderDialog({
     required this.initialValues,
     required this.buttonText,
+    required Map<String, dynamic> this.grinderToUpdate,
   });
 
   @override
@@ -20,15 +22,17 @@ class _GrinderDialogState extends State<GrinderDialog> {
   bool formComplete = false;
   final _formKey = GlobalKey<FormState>();
   final Userprefs prefs = Userprefs();
+
   final Map<String, dynamic> mapToAdd = {
     "name": "",
     "isActive": true,
     "settings": "",
   };
+  
   List<Widget> settingWidgets = [];
 
   List<int> inputStyles = [0];
-  List<Map<String, dynamic>> settingOptions = [{}];
+  List<Map<String, dynamic>> settingOptions = [{"type": "A"}];
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +58,13 @@ class _GrinderDialogState extends State<GrinderDialog> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    GetFormField(widget.initialValues, mapToAdd, "name",
-                        "Enter grinder name", "Name"),
+                    GetFormField(widget.initialValues, mapToAdd, "name","Enter grinder name", "Name"),
                     Column(
-                      children: [
+                      children: 
+                      [
+                        
                         for (int i = 0; i < settingOptions.length; i++)
-                          GetSettingSelector(i),
+                        GetSettingSelector(i),
                         ElevatedButton(
                           child: Icon(Icons.add),
                           onPressed: () {
@@ -96,20 +101,14 @@ class _GrinderDialogState extends State<GrinderDialog> {
   }
 
   Widget GetSettingSelector(int index) {
-    int currentIndex = index;
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
         children: [
           DropdownButton<String>(
-            value: settingOptions[index]["type"] == "A"
-                ? "Alphabetical"
-                : settingOptions[index]["type"] == "I"
-                    ? "Numeric"
-                    : "Decimal",
+            value: settingOptions[index]["type"] == "A"? "Alphabetical" : settingOptions[index]["type"] == "I" ? "Numeric": "Decimal",
             items: const [
-              DropdownMenuItem(
-                  value: "Alphabetical", child: Text("Alphabetical")),
+              DropdownMenuItem(value: "Alphabetical", child: Text("Alphabetical")),
               DropdownMenuItem(value: "Decimal", child: Text("Decimal")),
               DropdownMenuItem(value: "Numeric", child: Text("Numeric")),
             ],
@@ -118,7 +117,6 @@ class _GrinderDialogState extends State<GrinderDialog> {
                 setState(() {
                   List<Map<String, dynamic>> newOptions =
                       List.from(settingOptions);
-
                   newOptions[index] = {
                     ...newOptions[index],
                     "type": value == "Alphabetical"
@@ -152,7 +150,9 @@ class _GrinderDialogState extends State<GrinderDialog> {
     switch (inputStyle) {
       case 0:
         return Row(
-          children: [
+          children: 
+          [
+            
             GetFormFieldWithValidator(
                 index,
                 "startLetter",
@@ -169,7 +169,8 @@ class _GrinderDialogState extends State<GrinderDialog> {
         );
       case 1:
         return Column(
-          children: [
+          children:
+           [
             Row(
               children: [
                 GetFormFieldWithValidator(
@@ -189,26 +190,28 @@ class _GrinderDialogState extends State<GrinderDialog> {
             Row(
               children: [
                 const Text("Precision"),
-                DropdownButton<String>(
-                  value:
-                      settingOptions[index]["precision"]?.toString() ?? "0.1",
-                  items: const [
-                    DropdownMenuItem(value: "0.1", child: Text("0.1")),
-                    DropdownMenuItem(value: "0.01", child: Text("0.01")),
-                  ],
-                  onChanged: (String? value) {
-                    if (value != null) {
-                      setState(() {
-                        List<Map<String, dynamic>> newOptions =
-                            List.from(settingOptions);
-                        newOptions[index] = {
-                          ...newOptions[index],
-                          "precision": value
-                        };
-                        settingOptions = newOptions;
-                      });
-                    }
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<String>(
+                    value: settingOptions[index]["precision"]?.toString() ?? "0.1",
+                    items: const [
+                      DropdownMenuItem(value: "0.1", child: Text("0.1")),
+                      DropdownMenuItem(value: "0.01", child: Text("0.01")),
+                    ],
+                    onChanged: (String? value) {
+                      if (value != null) {
+                        setState(() {
+                          List<Map<String, dynamic>> newOptions =
+                              List.from(settingOptions);
+                          newOptions[index] = {
+                            ...newOptions[index],
+                            "precision": value
+                          };
+                          settingOptions = newOptions;
+                        });
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
@@ -257,6 +260,34 @@ class _GrinderDialogState extends State<GrinderDialog> {
       String keyToEdit,
       String hintText,
       String labelText,
+      FormFieldValidator<String>? validator) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SizedBox(
+          width: 300,
+          child: TextFormField(
+            style: prefs.smallInputTextSurface,
+            validator: validator,
+            initialValue: widget.initialValues[keyToEdit]?.toString() ?? "",
+            decoration: InputDecoration(
+              hintText: hintText,
+              labelText: labelText,
+            ),
+            onSaved: (newValue) {
+              if (newValue != null) {
+                settingOptions[indexToUpdate][keyToEdit] = newValue;
+              }
+            },
+          )),
+    );
+  }
+
+   Padding GetFormFieldWithValidatorAndInitialValue(
+      int indexToUpdate,
+      String keyToEdit,
+      String hintText,
+      String labelText,
+      String initialValue,
       FormFieldValidator<String>? validator) {
     return Padding(
       padding: const EdgeInsets.all(8),
