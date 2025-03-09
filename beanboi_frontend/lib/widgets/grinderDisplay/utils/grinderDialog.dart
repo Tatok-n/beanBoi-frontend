@@ -6,19 +6,21 @@ import 'package:beanboi_frontend/controllers/grinderCaller.dart'
 class GrinderDialog extends StatefulWidget {
   final Map<dynamic, dynamic> initialValues;
   final String buttonText;
-  Map<String, dynamic> grinderToUpdate;
 
   GrinderDialog({
     required this.initialValues,
     required this.buttonText,
-    required Map<String, dynamic> this.grinderToUpdate,
   });
 
   @override
   _GrinderDialogState createState() => _GrinderDialogState();
+
+  
 }
 
 class _GrinderDialogState extends State<GrinderDialog> {
+
+  
   bool formComplete = false;
   final _formKey = GlobalKey<FormState>();
   final Userprefs prefs = Userprefs();
@@ -33,6 +35,26 @@ class _GrinderDialogState extends State<GrinderDialog> {
 
   List<int> inputStyles = [0];
   List<Map<String, dynamic>> settingOptions = [{"type": "A"}];
+
+  @override
+void initState() {
+  super.initState();
+
+
+if (widget.initialValues.containsKey("settings") && widget.initialValues["settings"] != null) {
+  var settings = widget.initialValues["grindSettingRequests"];
+  print(settings);
+  settingOptions = settings.map<Map<String, dynamic>>((s) {
+    return <String, dynamic>{...s};
+  }).toList();
+  inputStyles = settings.map<int>((s) {
+    return s["type"] == "F" ? 1 : s["type"] == "I" ? 2 : 0;
+  }).toList();
+} else {
+  settingOptions = [{"type": "A"}];
+  inputStyles = [0];
+}
+}
 
   @override
   Widget build(BuildContext context) {
@@ -146,169 +168,147 @@ class _GrinderDialogState extends State<GrinderDialog> {
     );
   }
 
-  Widget _getInputDelimitors(int inputStyle, int index) {
-    switch (inputStyle) {
-      case 0:
-        return Row(
-          children: 
-          [
-            
-            GetFormFieldWithValidator(
-                index,
-                "startLetter",
-                "Enter the finest grind setting",
-                "Start Letter",
-                letterValidator),
-            GetFormFieldWithValidator(
-                index,
-                "endLetter",
-                "Enter the coarsest grind setting",
-                "End Letter",
-                letterValidator),
-          ],
-        );
-      case 1:
-        return Column(
-          children:
-           [
-            Row(
-              children: [
-                GetFormFieldWithValidator(
-                    index,
-                    "startNumerator",
-                    "Enter the finest grind setting",
-                    "Start Number",
-                    intValidator),
-                GetFormFieldWithValidator(
-                    index,
-                    "endNumerator",
-                    "Enter the coarsest grind setting",
-                    "End Number",
-                    intValidator),
-              ],
-            ),
-            Row(
-              children: [
-                const Text("Precision"),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DropdownButton<String>(
-                    value: settingOptions[index]["precision"]?.toString() ?? "0.1",
-                    items: const [
-                      DropdownMenuItem(value: "0.1", child: Text("0.1")),
-                      DropdownMenuItem(value: "0.01", child: Text("0.01")),
-                    ],
-                    onChanged: (String? value) {
-                      if (value != null) {
-                        setState(() {
-                          List<Map<String, dynamic>> newOptions =
-                              List.from(settingOptions);
-                          newOptions[index] = {
-                            ...newOptions[index],
-                            "precision": value
-                          };
-                          settingOptions = newOptions;
-                        });
-                      }
-                    },
-                  ),
+Widget _getInputDelimitors(int inputStyle, int index) {
+  switch (inputStyle) {
+    case 0:
+      return Row(
+        children: [
+          GetFormFieldWithValidator(
+              index,
+              "startLetter",
+              "Enter the finest grind setting",
+              "Start Letter",
+              letterValidator),
+          GetFormFieldWithValidator(
+              index,
+              "endLetter",
+              "Enter the coarsest grind setting",
+              "End Letter",
+              letterValidator),
+        ],
+      );
+    case 1:
+      return Column(
+        children: [
+          Row(
+            children: [
+              GetFormFieldWithValidator(
+                  index,
+                  "startNumerator",
+                  "Enter the finest grind setting",
+                  "Start Number",
+                  intValidator),
+              GetFormFieldWithValidator(
+                  index,
+                  "endNumerator",
+                  "Enter the coarsest grind setting",
+                  "End Number",
+                  intValidator),
+            ],
+          ),
+          Row(
+            children: [
+              const Text("Precision"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButton<String>(
+                  value: widget.initialValues["settings"] != null &&
+                          widget.initialValues["settings"].length > index
+                      ? widget.initialValues["settings"][index]["precision"]?.toString() ?? "0.1"
+                      : "0.1",
+                  items: const [
+                    DropdownMenuItem(value: "0.1", child: Text("0.1")),
+                    DropdownMenuItem(value: "0.01", child: Text("0.01")),
+                  ],
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      setState(() {
+                        List<Map<String, dynamic>> newOptions =
+                            List.from(settingOptions);
+                        newOptions[index] = {
+                          ...newOptions[index],
+                          "precision": value
+                        };
+                        settingOptions = newOptions;
+                      });
+                    }
+                  },
                 ),
-              ],
-            ),
-          ],
-        );
-      case 2:
-        return Row(
-          children: [
-            GetFormFieldWithValidator(index, "startNumerator",
-                "Enter the finest grind setting", "Start Number", intValidator),
-            GetFormFieldWithValidator(index, "endNumerator",
-                "Enter the coarsest grind setting", "End Number", intValidator),
-          ],
-        );
-      default:
-        return Container();
-    }
+              ),
+            ],
+          ),
+        ],
+      );
+    case 2:
+      return Row(
+        children: [
+          GetFormFieldWithValidator(index, "startNumerator",
+              "Enter the finest grind setting", "Start Number", intValidator),
+          GetFormFieldWithValidator(index, "endNumerator",
+              "Enter the coarsest grind setting", "End Number", intValidator),
+        ],
+      );
+    default:
+      return Container();
   }
+}
 
-  Padding GetFormField(
-      Map<dynamic, dynamic> initialValues,
-      Map<String, dynamic> mapToUpdate,
-      String keyToEdit,
-      String hintText,
-      String labelText) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
+Padding GetFormField(
+    Map<dynamic, dynamic> initialValues,
+    Map<String, dynamic> mapToUpdate,
+    String keyToEdit,
+    String hintText,
+    String labelText) {
+  return Padding(
+    padding: const EdgeInsets.all(8),
+    child: TextFormField(
+      style: prefs.smallInputTextSurface,
+      initialValue: initialValues[keyToEdit]?.toString() ?? "",
+      decoration: InputDecoration(
+        hintText: hintText,
+        labelText: labelText,
+      ),
+      onSaved: (newValue) {
+        if (newValue != null) {
+          mapToUpdate[keyToEdit] = newValue;
+        }
+      },
+    ),
+  );
+}
+
+Padding GetFormFieldWithValidator(
+    int indexToUpdate,
+    String keyToEdit,
+    String hintText,
+    String labelText,
+    FormFieldValidator<String>? validator) {
+  return Padding(
+    padding: const EdgeInsets.all(8),
+    child: SizedBox(
+      width: 300,
       child: TextFormField(
         style: prefs.smallInputTextSurface,
-        initialValue: initialValues[keyToEdit]?.toString() ?? "",
+        validator: validator,
+        initialValue: widget.initialValues["grindSettingRequests"] != null &&
+                widget.initialValues["grindSettingRequests"].length > indexToUpdate
+            ? widget.initialValues["grindSettingRequests"][indexToUpdate][keyToEdit]?.toString() ?? ""
+            : "",
         decoration: InputDecoration(
           hintText: hintText,
           labelText: labelText,
         ),
         onSaved: (newValue) {
           if (newValue != null) {
-            mapToUpdate[keyToEdit] = newValue;
+            settingOptions[indexToUpdate][keyToEdit] = newValue;
           }
         },
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Padding GetFormFieldWithValidator(
-      int indexToUpdate,
-      String keyToEdit,
-      String hintText,
-      String labelText,
-      FormFieldValidator<String>? validator) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: SizedBox(
-          width: 300,
-          child: TextFormField(
-            style: prefs.smallInputTextSurface,
-            validator: validator,
-            initialValue: widget.initialValues[keyToEdit]?.toString() ?? "",
-            decoration: InputDecoration(
-              hintText: hintText,
-              labelText: labelText,
-            ),
-            onSaved: (newValue) {
-              if (newValue != null) {
-                settingOptions[indexToUpdate][keyToEdit] = newValue;
-              }
-            },
-          )),
-    );
-  }
-
-   Padding GetFormFieldWithValidatorAndInitialValue(
-      int indexToUpdate,
-      String keyToEdit,
-      String hintText,
-      String labelText,
-      String initialValue,
-      FormFieldValidator<String>? validator) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: SizedBox(
-          width: 300,
-          child: TextFormField(
-            style: prefs.smallInputTextSurface,
-            validator: validator,
-            initialValue: widget.initialValues[keyToEdit]?.toString() ?? "",
-            decoration: InputDecoration(
-              hintText: hintText,
-              labelText: labelText,
-            ),
-            onSaved: (newValue) {
-              if (newValue != null) {
-                settingOptions[indexToUpdate][keyToEdit] = newValue;
-              }
-            },
-          )),
-    );
-  }
+   
 
   String? intValidator(String? value) {
     return (value != null && RegExp(r'^[0-9]+$').hasMatch(value))

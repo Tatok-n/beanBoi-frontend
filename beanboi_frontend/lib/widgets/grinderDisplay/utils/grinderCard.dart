@@ -21,7 +21,6 @@ class GrinderCard extends StatelessWidget {
     dialog = GrinderDialog(
       initialValues: data,
       buttonText: "Update",
-      grinderToUpdate: data,
     );
   }
 
@@ -74,7 +73,6 @@ class GrinderCard extends StatelessWidget {
                 builder: (BuildContext context) => GrinderDialog(
                   initialValues: data,
                   buttonText: "Add",
-                  grinderToUpdate: data,
                 ),
               );
 

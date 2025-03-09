@@ -23,8 +23,9 @@ class _GrinderState extends State<GrinderDisplay> {
   late Map<String, dynamic> grinderToAdd = new Map();
   late Map<String, dynamic> grinderToUpdate = new Map();
 
-  Map<String, String> addInitialValue = {
+  Map<String, dynamic> addInitialValue = {
     "name": "",
+    "isActive": true,
   };
 
   bool isLoading = true;
@@ -90,7 +91,6 @@ class _GrinderState extends State<GrinderDisplay> {
                 builder: (BuildContext context) => GrinderDialog(
                   initialValues: addInitialValue,
                   buttonText: "Add",
-                  grinderToUpdate: {},
                 ),
               );
 
