@@ -1,22 +1,23 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:beanboi_frontend/widgets/commonUtils/dataCard.dart';
+import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/utils/beanPurchaseDialog.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/dataCardWithExtras.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/label.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanDialog.dart';
 import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 
-class BeanCard extends StatelessWidget {
+class BeanPurchaseCard extends StatelessWidget {
 
-  final Map<dynamic, dynamic> data;
-  late final Beandialog dialog;
+  final Map<String, dynamic> data;
+  late final BeanPurchaseDialog dialog;
   final String user;
-  final Function() updateBeanCallback;
+  final Function() updatePurchaseCallback;
 
-  BeanCard(this.data, this.updateBeanCallback, this.user, {super.key}) {
-    dialog = Beandialog(
+  BeanPurchaseCard(this.data, this.updatePurchaseCallback, this.user, {super.key}) {
+    dialog = BeanPurchaseDialog(
       initialValues: data,
       buttonText: "Update",
     );
@@ -24,15 +25,43 @@ class BeanCard extends StatelessWidget {
 
   final Userprefs userprefs = Userprefs();
 
+
+
   @override
   Widget build(BuildContext context) {
-    return DataCard(data, user, [
+    return DataCardWithExtras(data, user, [
       _buildActionButtons(context),
       getContent(),
-      
-    ]);
+    ],AmountProgressBarHorizontal(data));
 
   }
+
+    Widget AmountProgressBarHorizontal(Map<String, dynamic> data) {
+    double amountPurchased = double.parse(data["amountPurchased"]);
+    double ratioLeft = double.parse(data["amountRemaining"]) /amountPurchased;
+    return  Container(
+                width: min(200, max(50,amountPurchased)),
+                height: 20,
+                decoration: BoxDecoration(
+                  color: userprefs.colorScheme.surfaceDim,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                  )],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  child: LinearProgressIndicator(
+                    value: ratioLeft,
+                    valueColor: AlwaysStoppedAnimation<Color>(userprefs.colorScheme.secondary),
+                  ),
+                ),);
+  }
+
+
+
 
 
 
@@ -72,12 +101,12 @@ class BeanCard extends StatelessWidget {
               if (dialog.formComplete) {
                 updateBeans(dialog.mapToEdit);
                 dialog.formComplete = false;
-                updateBeanCallback();
+                updatePurchaseCallback();
               }
             }),
             _buildActionButton(Icons.delete, "Delete", () async {
               await deleteBean();
-              updateBeanCallback();
+              updatePurchaseCallback();
             }),
           ],
         ),
@@ -104,14 +133,11 @@ class BeanCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Label("Roaster", data["roaster"].toString()),
-        Label("Origin", data["origin"].toString()),
-        Label("Altitude", data["altitude"].toString()),
-        Label("Price", data["price"].toString()),
-        Label("Roast Degree", data["roastDegree"].toString()),
-        Label("Process", data["process"].toString()),
-        Label("Tasting Notes", data["tastingNotes"].toString()),
-        Label("Times purchased", data["timesPurchased"].toString()),
+        Label("Name", data["name"].toString()),
+        Label("Amount purchased", data["amountPurchased"].toString()),
+        Label("Amount remaining", data["amountRemaining"].toString()),
+        Label("Purchase date", data["purchaseDate"].toString()),
+        Label("Roast date", data["roastDate"].toString()),
       ],
     );
   }
@@ -119,40 +145,37 @@ class BeanCard extends StatelessWidget {
 
   Widget _buildTwoColumnLayout() {
     return
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Label("Roaster", data["roaster"].toString()),
-                    Label("Origin", data["origin"].toString()),
-                    Label("Altitude", data["altitude"].toString()),
-                    Label("Times purchased", data["timesPurchased"].toString()),
-                  ],
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Label("Amount purchased", data["amountPurchased"].toString()),
+        Label("Amount remaining", data["amountRemaining"].toString()),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Label("Price", data["price"].toString()),
-                    Label("Roast Degree", data["roastDegree"].toString()),
-                    Label("Process", data["process"].toString()),
-                    Label("Tasting Notes", data["tastingNotes"].toString()),
-                  ],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+        Label("Purchase date", data["purchaseDate"].toString()),
+        Label("Roast date", data["roastDate"].toString()),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-        
-          ],
-        );
+            
+              ],
+            );
+
   }
 
   Future<void> deleteBean() async {

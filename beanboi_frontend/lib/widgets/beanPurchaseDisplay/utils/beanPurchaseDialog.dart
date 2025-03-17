@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 
 
-class Beandialog extends StatelessWidget {
+class BeanPurchaseDialog extends StatelessWidget {
   final Map<dynamic, dynamic> initialValues;
   final Map<dynamic, dynamic> mapToEdit = {};
   final String buttonText;
   bool formComplete = false;
   final Userprefs prefs = Userprefs();
 
-  Beandialog({
+  BeanPurchaseDialog({
     required this.initialValues,
     required this.buttonText,
   });

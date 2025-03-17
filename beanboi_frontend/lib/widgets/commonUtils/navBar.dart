@@ -1,4 +1,5 @@
 import 'package:beanboi_frontend/main.dart';
+import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/beanPurchaseDisplay.dart';
 import 'package:beanboi_frontend/widgets/homeScreen/homeScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,10 @@ class navBar extends StatelessWidget {
 
   Route _routeToBeans() {
     return makeAnimatedRoute(BeansDisplay());
+  }
+
+  Route _routeToPurchases() {
+    return makeAnimatedRoute(BeanPurchaseDisplay());
   }
 
     Route _routeToGrinders() {
@@ -41,7 +46,7 @@ class navBar extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> cardNames = [
       {'name': 'Beans', 'route': _routeToBeans()},
-      {'name': 'Bean Purchases', 'route': _routeToBeans()},
+      {'name': 'Bean Purchases', 'route': _routeToPurchases()},
       {'name': 'Grinders', 'route': _routeToGrinders()},
       {'name': 'Recipes', 'route': _routeToBeans()},
       {'name': 'Brews', 'route': _routeToBeans()},
