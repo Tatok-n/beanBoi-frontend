@@ -6,9 +6,10 @@ import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 
 
 class BeanPurchaseDialog extends StatelessWidget {
-  final Map<dynamic, dynamic> initialValues;
-  final Map<dynamic, dynamic> mapToEdit = {};
+  final Map<String, dynamic> initialValues;
+  final Map<String, dynamic> mapToEdit = {};
   final String buttonText;
+  List<Map<String, dynamic>> beans = [];
   bool formComplete = false;
   final Userprefs prefs = Userprefs();
 

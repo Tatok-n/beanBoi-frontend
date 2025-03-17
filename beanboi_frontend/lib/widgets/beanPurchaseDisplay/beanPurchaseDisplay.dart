@@ -82,7 +82,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
         PlasmaBg(),
         Scaffold(
           appBar: AppBar(
-            title: Text('Beans'),
+            title: Text('Bean purchases'),
           ),
           drawer: navBar(),
           backgroundColor: Colors.transparent,
@@ -94,11 +94,11 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
                 builder: (BuildContext context) => dialog,
               );
               if (dialog.formComplete) {
-                addBeans(dialog.getUpdatedMap());
+                addPurchase(dialog.getUpdatedMap());
                 dialog.formComplete = false;
               }
             },
-            label: Text('Add bean'),
+            label: Text('Add purchase'),
             icon: Icon(Icons.add),
           ),
           body: isLoading
@@ -125,19 +125,17 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
   }
 
 
-  void addBeans(Map<dynamic, dynamic> bean) {
-    Map<String, dynamic> updatedBeans = {
-        "name": bean["name"],
-        "origin": bean["origin"],
-        "process": bean["process"],
-        "price": bean["price"],
-        "roastDegree": bean["roastDegree"],
-        "roaster": bean["roaster"],
-        "altitude": bean["altitude"],
-        "tastingNotes": bean["tastingNotes"],
+  void addPurchase(Map<dynamic, dynamic> purchase) {
+    Map<String, dynamic> updatedPurchase = {
+           "name": purchase["name"],
+    "beanId": purchase["beanId"],
+    "pricePaid": purchase["pricePaid"],
+    "amountPurchased": purchase["amountPurchased"],
+    "dateOfPurchase": purchase["dateOfPurchase"],
+    "dateOfRoast": purchase["dateOfRoast"],
       };
 
-    savePurchase(updatedBeans).then((_) {
+    savePurchase(updatedPurchase).then((_) {
       fetchPurchases();
       setState(() {});
     });
