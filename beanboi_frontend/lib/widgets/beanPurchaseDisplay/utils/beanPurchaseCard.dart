@@ -12,12 +12,14 @@ import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
 class BeanPurchaseCard extends StatelessWidget {
 
   final Map<String, dynamic> data;
+  final List<Map<String, dynamic>> beans;
   late final BeanPurchaseDialog dialog;
   final String user;
   final Function() updatePurchaseCallback;
 
-  BeanPurchaseCard(this.data, this.updatePurchaseCallback, this.user, {super.key}) {
+  BeanPurchaseCard(this.data, this.updatePurchaseCallback, this.user, {required this.beans , super.key}) {
     dialog = BeanPurchaseDialog(
+      beans: this.beans,
       initialValues: data,
       buttonText: "Update",
     );

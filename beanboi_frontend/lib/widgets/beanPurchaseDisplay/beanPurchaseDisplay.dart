@@ -21,8 +21,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
   List<Map<String, dynamic>> purchases = [];
   late Map<String, dynamic> purchaseToAdd = new Map();
   late Map<String, dynamic> purchaseToUpdate = new Map();
-  List<Map<String, dynamic>> beans = [];
-  
+  late List<Map<String, dynamic>> beans = [];
 
 
   Map<String, String> addInitialValue = {
@@ -42,9 +41,17 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
 
   @override
   void initState() {
+        dialog = BeanPurchaseDialog(
+      initialValues: addInitialValue,
+      buttonText: "Add",
+      beans: beans,
+    );
+
+    fetchBeans();
+
     super.initState();
     fetchPurchases();
-    fetchBeans();
+    
   }
 
   Future<void> fetchPurchases() async {
@@ -67,6 +74,11 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
       List<Map<String, dynamic>> fetchedBeans = await getAllBeans(user);
       setState(() {
         beans = fetchedBeans;
+        dialog = BeanPurchaseDialog(
+        initialValues: addInitialValue,
+        buttonText: "Add",
+        beans: beans,
+  );
       });
     } catch (e) {
       print("Error fetching beans: $e");
@@ -105,6 +117,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {
               purchaseToAdd = {};
+              fetchBeans();
               await showDialog<void>(
                 context: context,
                 builder: (BuildContext context) => dialog,
@@ -127,6 +140,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: BeanPurchaseCard(
+                              beans : beans,
                               purchases[index],
                               () => { 
                                 fetchPurchases()},

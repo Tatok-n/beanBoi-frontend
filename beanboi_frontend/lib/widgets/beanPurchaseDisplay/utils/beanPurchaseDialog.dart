@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/utils/beanPurchaseDropdown.dart';
+import 'package:beanboi_frontend/widgets/commonUtils/datePicker.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 
@@ -9,13 +11,14 @@ class BeanPurchaseDialog extends StatelessWidget {
   final Map<String, dynamic> initialValues;
   final Map<String, dynamic> mapToEdit = {};
   final String buttonText;
-  List<Map<String, dynamic>> beans = [];
+  late List<Map<String, dynamic>> beans;
   bool formComplete = false;
   final Userprefs prefs = Userprefs();
 
   BeanPurchaseDialog({
     required this.initialValues,
     required this.buttonText,
+    required this.beans,
   });
 
   @override
@@ -47,13 +50,12 @@ class BeanPurchaseDialog extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    GetFormField(initialValues, mapToEdit, "name", "Enter bean name", "Name"),
-                    GetFormField(initialValues, mapToEdit, "origin", "Enter bean Origin", "Origin"),
-                    GetFormField(initialValues, mapToEdit, "process", "Enter the process used", "Process"),
-                    GetFormFieldWithValidator(initialValues, mapToEdit, "roastDegree", "Enter roast Degree", "Roast Degree", intValidator, (newValue) => mapToEdit["roastDegree"] = int.tryParse(newValue ?? '')),
-                    GetFormField(initialValues, mapToEdit, "roaster", "Enter Roaster", "Roaster"),
-                    GetFormFieldWithValidator(initialValues, mapToEdit, "altitude", "Enter altitude of cultivation", "Altitude", intValidator, (newValue) => mapToEdit["altitude"] = int.tryParse(newValue ?? '')),
-                    GetFormField(initialValues, mapToEdit, "tastingNotes", 'What does the coffee taste like...', "Tasting notes"),
+                    GetFormField(initialValues, mapToEdit, "name", "Enter purchase name", "Name"),
+                    datePicker(),
+                    datePicker(),
+                    beanDropdown(beans : beans),
+                    GetFormFieldWithValidator(initialValues, mapToEdit, "pricePaid", "Enter the price paid for the purchase", "Price", intValidator, (newValue) => mapToEdit["price"] = int.tryParse(newValue ?? '')),
+                    GetFormFieldWithValidator(initialValues, mapToEdit, "amount", "Enter the amount purchased", "Amount", intValidator, (newValue) => mapToEdit["amount"] = int.tryParse(newValue ?? '')),
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
