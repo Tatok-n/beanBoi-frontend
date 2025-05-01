@@ -1,11 +1,14 @@
 import 'package:beanboi_frontend/widgets/PlasmaBackgound/plasma.dart';
 import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/utils/beanPurchaseCard.dart';
 import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/utils/beanPurchaseDialog.dart';
+import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/utils/beanPurchaseDropdown.dart';
 import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanCard.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/controllers/beanPurchaseCaller.dart' as beanPurchaseCaller;
 import 'package:beanboi_frontend/widgets/commonUtils/navBar.dart';
+
+import '../../controllers/beanCaller.dart';
 
 class BeanPurchaseDisplay extends StatefulWidget {
   @override
@@ -18,6 +21,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
   List<Map<String, dynamic>> purchases = [];
   late Map<String, dynamic> purchaseToAdd = new Map();
   late Map<String, dynamic> purchaseToUpdate = new Map();
+  List<Map<String, dynamic>> beans = [];
   
 
 
@@ -40,6 +44,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
   void initState() {
     super.initState();
     fetchPurchases();
+    fetchBeans();
   }
 
   Future<void> fetchPurchases() async {
@@ -54,6 +59,17 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
         isLoading = false;
       });
       print("Error fetching purchases: $e");
+    }
+  }
+
+  Future<void> fetchBeans() async {
+    try {
+      List<Map<String, dynamic>> fetchedBeans = await getAllBeans(user);
+      setState(() {
+        beans = fetchedBeans;
+      });
+    } catch (e) {
+      print("Error fetching beans: $e");
     }
   }
 
