@@ -8,17 +8,17 @@ import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 
 import '../../commonUtils/appRoutes.dart';
 
-
 class BeanPurchaseDialog extends StatelessWidget {
   final Map<String, dynamic> initialValues;
   final Map<String, dynamic> mapToEdit = {
     "name": "",
     "beanId": "",
-    "pricePaid": "0",
-    "amountPurchased": "0",
+    "pricePaid": 0.0,
+    "amountPurchased": 0.0,
     "dateOfPurchase": "",
     "dateOfRoast": "",
   };
+  String? selectedBeanId;
   final String buttonText;
   late List<Map<String, dynamic>> beans;
   bool formComplete = false;
@@ -38,7 +38,7 @@ class BeanPurchaseDialog extends StatelessWidget {
     return AlertDialog(
       content: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets. only(bottom: 8.0),
+          padding: const EdgeInsets.only(bottom: 8.0),
           child: Stack(
             clipBehavior: Clip.none,
             children: <Widget>[
@@ -60,28 +60,55 @@ class BeanPurchaseDialog extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    GetFormField(initialValues, mapToEdit, "name", "Enter purchase name", "Name"),
+                    GetFormField(initialValues, mapToEdit, "name",
+                        "Enter purchase name", "Name"),
                     datePickerItem("Purchase Date", "dateOfPurchase"),
                     datePickerItem("Roast Date", "dateOfRoast"),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children :
-                    [beanDropdown(beans : beans),
-                    OutlinedButton(onPressed: () => Navigator.of(context).push(appRoutes.routeToBeans()), child : Text("New bean ?")),]),
-                    GetFormFieldWithValidator(initialValues, mapToEdit, "pricePaid", "Enter the price paid for the purchase", "Price", decimalValidator, (newValue) => mapToEdit["pricePaid"] = num.tryParse(newValue ?? '')),
-                    GetFormFieldWithValidator(initialValues, mapToEdit, "amountPurchased", "Enter the amount purchased", "Amount", decimalValidator, (newValue) => mapToEdit["amountPurchased"] = num.tryParse(newValue ?? '')),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          beanDropdown(
+  beans: beans,
+  selectedBeanId: selectedBeanId,
+  onChanged: (newId) {
+    selectedBeanId = newId;
+    mapToEdit["beanId"] = newId; // update the form map here
+  },
+),
+                          OutlinedButton(
+                              onPressed: () => Navigator.of(context)
+                                  .push(appRoutes.routeToBeans()),
+                              child: Text("New bean ?")),
+                        ]),
+                    GetFormFieldWithValidator(
+                        initialValues,
+                        mapToEdit,
+                        "pricePaid",
+                        "Enter the price paid for the purchase",
+                        "Price",
+                        decimalValidator,
+                        (newValue) => mapToEdit["pricePaid"] =
+                            num.tryParse(newValue ?? '')),
+                    GetFormFieldWithValidator(
+                        initialValues,
+                        mapToEdit,
+                        "amountPurchased",
+                        "Enter the amount purchased",
+                        "Amount",
+                        decimalValidator,
+                        (newValue) => mapToEdit["amountPurchased"] =
+                            num.tryParse(newValue ?? '')),
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
                         child: Text(buttonText),
                         onPressed: () {
-                          print(mapToEdit);
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            Navigator.of(context).pop();
-                            formComplete = true;
-                          }
-                        },
+  if (_formKey.currentState!.validate()) {
+    mapToEdit["beanId"] = mapToEdit["beanId"] ?? initialValues["beanId"];
+    _formKey.currentState!.save();
+    Navigator.of(context).pop(mapToEdit); 
+  }
+}
                       ),
                     )
                   ],
@@ -94,75 +121,67 @@ class BeanPurchaseDialog extends StatelessWidget {
     );
   }
 
-
-  String? intValidator(value) {
-                      return (value != null &&
-                              RegExp(r'^[0-9]+$').hasMatch(value))
-                          ? null
-                          : 'Only whole numbers are allowed.';
-                    }
-
   String? decimalValidator(value) {
-                      return (value != null &&
-                              RegExp(r'^[0-9]+(\.[0-9]+)?$')
-                                  .hasMatch(value))
-                          ? null
-                          : 'Only decimal numbers are allowed.';
-                    }
-
-  Padding datePickerItem(String label, String field) {
-     return Padding(
-                padding: const EdgeInsets.all(8),
-                child : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(label, style: prefs.smallInputTextSurface),
-                    datePicker(
-                      onDateSelected: (date) {
-                        mapToEdit[field] = date;
-                      },
-                    ),
-                  ],
-                )
-                );
-  
+    return (value != null && RegExp(r'^[0-9]+(\.[0-9]+)?$').hasMatch(value))
+        ? null
+        : 'Only decimal numbers are allowed.';
   }
 
-  
-
-  Padding GetFormField(Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText) {
+  Padding datePickerItem(String label, String field) {
     return Padding(
-                padding: const EdgeInsets.all(8),
-                child: TextFormField(
-                  style: prefs.smallInputTextSurface,
-                  initialValue: initialValues[keyToEdit],
-                   decoration: InputDecoration(
-                       hintText: hintText,
-                       labelText: labelText),
-                  onSaved: (newValue) =>
-                      mapToUpdate[keyToEdit] = newValue,
-                ),
-              );
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(label, style: prefs.smallInputTextSurface),
+            datePicker(
+              onDateSelected: (date) {
+                mapToEdit[field] = date?.toIso8601String();
+              },
+            ),
+          ],
+        ));
+  }
 
-  
+  Padding GetFormField(
+      Map<dynamic, dynamic> initialValues,
+      Map<dynamic, dynamic> mapToUpdate,
+      String keyToEdit,
+      String hintText,
+      String labelText) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: TextFormField(
+        style: prefs.smallInputTextSurface,
+        initialValue: initialValues[keyToEdit],
+        decoration: InputDecoration(hintText: hintText, labelText: labelText),
+        onSaved: (newValue) => mapToUpdate[keyToEdit] = newValue,
+      ),
+    );
   }
 
   Map<dynamic, dynamic> getUpdatedMap() {
-    return mapToEdit;}
+    print("updated map is :  $mapToEdit");
+    return mapToEdit;
+  }
 
-  Padding GetFormFieldWithValidator(Map<dynamic, dynamic> initialValues, Map<dynamic, dynamic> mapToUpdate, String keyToEdit, String hintText, String labelText, FormFieldValidator<String>? validator, FormFieldSetter<String>? onSaved) {
+  Padding GetFormFieldWithValidator(
+      Map<dynamic, dynamic> initialValues,
+      Map<dynamic, dynamic> mapToUpdate,
+      String keyToEdit,
+      String hintText,
+      String labelText,
+      FormFieldValidator<String>? validator,
+      FormFieldSetter<String>? onSaved) {
     return Padding(
-                
-                padding: const EdgeInsets.all(8),
-                child: TextFormField(
-                  style: prefs.smallInputTextSurface,
-                  validator : validator,
-                  initialValue: initialValues[keyToEdit].toString(),
-                  decoration: InputDecoration(
-                      hintText: hintText,
-                      labelText: labelText),
-                  onSaved: onSaved,
-                ),
-              );
-}
+      padding: const EdgeInsets.all(8),
+      child: TextFormField(
+        style: prefs.smallInputTextSurface,
+        validator: validator,
+        initialValue: initialValues[keyToEdit].toString(),
+        decoration: InputDecoration(hintText: hintText, labelText: labelText),
+        onSaved: onSaved,
+      ),
+    );
+  }
 }

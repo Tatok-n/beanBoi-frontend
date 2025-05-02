@@ -87,9 +87,9 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
 
   Future<void> savePurchase(Map<String, dynamic> bean) async {
     try {
-      await beanPurchaseCaller.savePurchase(bean, user, );
+      await beanPurchaseCaller.savePurchase(bean, user);
     } catch (e) {
-      print("Error adding beans: $e");
+      print("Error adding purchase: $e");
     }
     await fetchPurchases();
   }
@@ -118,14 +118,19 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
             onPressed: () async {
               purchaseToAdd = {};
               fetchBeans();
-              await showDialog<void>(
-                context: context,
-                builder: (BuildContext context) => dialog,
-              );
-              if (dialog.formComplete) {
-                addPurchase(dialog.getUpdatedMap());
-                dialog.formComplete = false;
-              }
+final result = await showDialog<Map<String, dynamic>>(
+  context: context,
+  builder: (BuildContext context) => BeanPurchaseDialog(
+    initialValues: addInitialValue,
+    buttonText: "Add",
+    beans: beans,
+  ),
+);
+
+if (result != null) {
+  addPurchase(result);
+}
+
             },
             label: Text('Add purchase'),
             icon: Icon(Icons.add),

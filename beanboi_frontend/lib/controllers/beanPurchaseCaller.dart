@@ -11,17 +11,17 @@ Future<List<Map<String,dynamic>>> getAllPurchases(String UID) async {
 }
 
 Future<void> savePurchase (Map<String, dynamic> map, String UID) async {
-  String saveBeanURL = "/users/"+UID+"/beans/";
+  String saveBeanURL = "/users/"+UID+"/beanPurchases";
   await manager.sendPostWithBody(saveBeanURL, map);
 } 
 
 Future<void> updatePurchase (Map<String, dynamic> map, String UID) async {
-  String updateBeanUrl = "/users/"+UID+"/beans/"+map["id"];
+  String updateBeanUrl = "/users/"+UID+"/beanPurchases/"+map["id"];
   await manager.sendPostWithBody(updateBeanUrl, map);
 } 
 
 Future<void> deletePurchase (String UID, String beanId) async {
-  String deleteBeanUrl = "/users/"+UID+"/beans/"+beanId;
+  String deleteBeanUrl = "/users/"+UID+"/beanPurchases/"+beanId;
   await manager.sendDelete(deleteBeanUrl);
 }
 
