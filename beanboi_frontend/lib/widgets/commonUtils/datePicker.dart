@@ -3,34 +3,44 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class datePicker extends StatefulWidget {
-  const datePicker({super.key});
+  final void Function(DateTime?) onDateSelected;
+  const datePicker({super.key, required this.onDateSelected});
 
   @override
   State<datePicker> createState() => _datePickerState();
 }
 
-class _datePickerState extends State<datePicker>{
+class _datePickerState extends State<datePicker> {
   DateTime? selectedDate;
   DateTime today = DateTime.now();
 
-    Future<void> _selectDate() async {
+  Future<void> _selectDate() async {
     int startYear = today.year - 1;
     int endYear = today.year + 1;
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: today,
       firstDate: DateTime(startYear),
       lastDate: DateTime(endYear),
     );
 
-    setState(() {
-      selectedDate = pickedDate;
-    });
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+      widget.onDateSelected(pickedDate);
+    }
   }
-  
-  
+
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(onPressed: _selectDate, child: const Text('Select Date'));
+    return OutlinedButton(
+      onPressed: _selectDate,
+      child: Text(
+        selectedDate == null
+            ? 'Select Date'
+            : '${selectedDate!.toLocal()}'.split(' ')[0],
+      ),
+    );
   }
 }

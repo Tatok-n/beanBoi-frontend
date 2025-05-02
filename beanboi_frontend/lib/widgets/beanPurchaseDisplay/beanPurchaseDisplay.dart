@@ -156,8 +156,9 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
 
 
   void addPurchase(Map<dynamic, dynamic> purchase) {
+    print(purchase);
     Map<String, dynamic> updatedPurchase = {
-           "name": purchase["name"],
+    "name": purchase["name"],
     "beanId": purchase["beanId"],
     "pricePaid": purchase["pricePaid"],
     "amountPurchased": purchase["amountPurchased"],

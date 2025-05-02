@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../beansDisplay/beanDisplay.dart';
 import '../grinderDisplay/grinderDisplay.dart';
+import 'appRoutes.dart';
 
 
 class navBar extends StatelessWidget {
@@ -45,15 +46,15 @@ class navBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> cardNames = [
-      {'name': 'Beans', 'route': _routeToBeans()},
-      {'name': 'Bean Purchases', 'route': _routeToPurchases()},
-      {'name': 'Grinders', 'route': _routeToGrinders()},
-      {'name': 'Recipes', 'route': _routeToBeans()},
-      {'name': 'Brews', 'route': _routeToBeans()},
-      {'name': 'Stats', 'route': _routeToBeans()},
-      {'name': 'Settings', 'route': _routeToBeans()},
-      {'name': 'Home', 'route': _routeToHome()},
-    ];
+  {'name': 'Beans', 'route': appRoutes.routeToBeans()},
+  {'name': 'Bean Purchases', 'route': appRoutes.routeToPurchases()},
+  {'name': 'Grinders', 'route': appRoutes.routeToGrinders()},
+  {'name': 'Recipes', 'route': appRoutes.routeToBeans()},
+  {'name': 'Brews', 'route': appRoutes.routeToBeans()},
+  {'name': 'Stats', 'route': appRoutes.routeToBeans()},
+  {'name': 'Settings', 'route': appRoutes.routeToBeans()},
+  {'name': 'Home', 'route': appRoutes.routeToHome()},
+];
 
     int screenIndex = 0;
     void handleScreenChanged(int selectedScreen) {
