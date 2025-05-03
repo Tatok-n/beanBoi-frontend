@@ -20,6 +20,7 @@ class BeanPurchaseCard extends StatelessWidget {
 
   BeanPurchaseCard(this.data, this.updatePurchaseCallback, this.user, {required this.beans , super.key}) {
     dialog = BeanPurchaseDialog(
+      isUpdate: true,
       beans: this.beans,
       initialValues: {
         "id": data["id"],
@@ -107,12 +108,10 @@ class BeanPurchaseCard extends StatelessWidget {
         child: Row(
           children: [
             _buildActionButton(Icons.edit, "Edit", () async {
-              print(dialog.initialValues);
               final result = await showDialog<Map<String, dynamic>>(
                 context: context,
                 builder: (BuildContext context) => dialog,
               );
-              print(result);
              if (result != null) {
                 updatePurchase(result);
                 updatePurchaseCallback();

@@ -25,8 +25,10 @@ class BeanPurchaseDialog extends StatelessWidget {
   late List<Map<String, dynamic>> beans;
   bool formComplete = false;
   final Userprefs prefs = Userprefs();
+  final bool isUpdate;
 
   BeanPurchaseDialog({
+    required this.isUpdate,
     required this.initialValues,
     required this.buttonText,
     required this.beans,
@@ -106,10 +108,25 @@ class BeanPurchaseDialog extends StatelessWidget {
                       child: ElevatedButton(
                           child: Text(buttonText),
                           onPressed: () {
-                            if (_formKey.currentState!.validate() && selectedBeanId != null && selectedPurchaseDate && selectedRoastDate) {
-                              mapToEdit["beanId"] = mapToEdit["beanId"] ??
-                                  initialValues["beanId"];
+                            print("pressed button");
+                            print("mapToEdit: $mapToEdit");
+                            print("initialValues: $initialValues");
+                            if (_formKey.currentState!.validate() && ((selectedBeanId != null && selectedPurchaseDate && selectedRoastDate) || isUpdate)) {
+                              print("form is valid");
+                              if (isUpdate && selectedBeanId == null) {
+                                mapToEdit["beanId"] = initialValues["beanId"];
+                              }; 
+                              if (isUpdate && !selectedRoastDate) {
+                                mapToEdit["dateOfRoast"] = initialValues["dateOfRoast"].toIso8601String();
+                              };
+                              if (isUpdate && !selectedPurchaseDate) {
+                                mapToEdit["dateOfPurchase"] = initialValues["dateOfPurchase"].toIso8601String();
+                              };
+                              mapToEdit["beanId"] = mapToEdit["beanId"] ?? initialValues["beanId"];
                               _formKey.currentState!.save();
+                              selectedBeanId = null;
+                              selectedRoastDate = false;
+                              selectedPurchaseDate = false;
                               Navigator.of(context).pop(mapToEdit);
                             }
                           }),
@@ -131,7 +148,6 @@ class BeanPurchaseDialog extends StatelessWidget {
   }
 
   Padding datePickerItem(String label, String field, bool isRoastDate) {
-    isRoastDate ? selectedRoastDate = true : selectedPurchaseDate = true;
     return Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
@@ -141,6 +157,7 @@ class BeanPurchaseDialog extends StatelessWidget {
             datePicker(
               initialDate: initialValues[field],
               onDateSelected: (date) {
+                isRoastDate ? selectedRoastDate = true : selectedPurchaseDate = true;
                 mapToEdit[field] = date?.toIso8601String();
               },
             ),
@@ -166,7 +183,6 @@ class BeanPurchaseDialog extends StatelessWidget {
   }
 
   Map<dynamic, dynamic> getUpdatedMap() {
-    print("updated map is :  $mapToEdit");
     return mapToEdit;
   }
 

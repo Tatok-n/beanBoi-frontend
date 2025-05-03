@@ -42,6 +42,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
   @override
   void initState() {
         dialog = BeanPurchaseDialog(
+      isUpdate: false,
       initialValues: addInitialValue,
       buttonText: "Add",
       beans: beans,
@@ -75,6 +76,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
       setState(() {
         beans = fetchedBeans;
         dialog = BeanPurchaseDialog(
+        isUpdate: false,
         initialValues: addInitialValue,
         buttonText: "Add",
         beans: beans,
@@ -121,6 +123,7 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
 final result = await showDialog<Map<String, dynamic>>(
   context: context,
   builder: (BuildContext context) => BeanPurchaseDialog(
+    isUpdate: false,
     initialValues: addInitialValue,
     buttonText: "Add",
     beans: beans,
@@ -161,7 +164,6 @@ if (result != null) {
 
 
   void addPurchase(Map<dynamic, dynamic> purchase) {
-    print(purchase);
     Map<String, dynamic> updatedPurchase = {
     "name": purchase["name"],
     "beanId": purchase["beanId"],
