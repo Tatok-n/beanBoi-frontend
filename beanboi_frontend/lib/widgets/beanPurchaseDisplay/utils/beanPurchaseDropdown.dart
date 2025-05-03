@@ -2,7 +2,7 @@ import 'package:beanboi_frontend/controllers/beanCaller.dart';
 import 'package:flutter/material.dart';
 
 
-class beanDropdown extends StatelessWidget {
+class beanDropdown extends StatefulWidget {
   final List<Map<String, dynamic>> beans;
   final String? selectedBeanId;
   final Function(String?) onChanged;
@@ -15,17 +15,35 @@ class beanDropdown extends StatelessWidget {
   });
 
   @override
+  State<beanDropdown> createState() => _beanDropdownState();
+}
+
+class _beanDropdownState extends State<beanDropdown> {
+  String? selectedId;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedId = widget.selectedBeanId;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-      value: selectedBeanId,
       hint: const Text("Select a bean"),
-      items: beans.map((Map bean) {
+      value: selectedId,
+      items: widget.beans.map((bean) {
         return DropdownMenuItem<String>(
           value: bean["id"].toString(),
           child: Text(bean["name"]),
         );
       }).toList(),
-      onChanged: onChanged,
+      onChanged: (value) {
+        setState(() {
+          selectedId = value;
+        });
+        widget.onChanged(value);
+      },
     );
   }
 }

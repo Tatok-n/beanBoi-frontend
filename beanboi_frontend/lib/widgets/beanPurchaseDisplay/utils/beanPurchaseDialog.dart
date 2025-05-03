@@ -15,10 +15,12 @@ class BeanPurchaseDialog extends StatelessWidget {
     "beanId": "",
     "pricePaid": 0.0,
     "amountPurchased": 0.0,
-    "dateOfPurchase": "",
-    "dateOfRoast": "",
+    "dateOfPurchase": DateTime.now(),
+    "dateOfRoast":  DateTime.now(),
   };
-  String? selectedBeanId;
+  String? selectedBeanId = null;
+  bool selectedRoastDate = false;
+  bool selectedPurchaseDate = false;
   final String buttonText;
   late List<Map<String, dynamic>> beans;
   bool formComplete = false;
@@ -62,19 +64,20 @@ class BeanPurchaseDialog extends StatelessWidget {
                   children: <Widget>[
                     GetFormField(initialValues, mapToEdit, "name",
                         "Enter purchase name", "Name"),
-                    datePickerItem("Purchase Date", "dateOfPurchase"),
-                    datePickerItem("Roast Date", "dateOfRoast"),
+                    datePickerItem("Purchase Date", "dateOfPurchase", false),
+                    datePickerItem("Roast Date", "dateOfRoast", true),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           beanDropdown(
-  beans: beans,
-  selectedBeanId: selectedBeanId,
-  onChanged: (newId) {
-    selectedBeanId = newId;
-    mapToEdit["beanId"] = newId; // update the form map here
-  },
-),
+                            beans: beans,
+                            selectedBeanId: initialValues["beanId"],
+                            onChanged: (newId) {
+                              selectedBeanId = newId;
+                              mapToEdit["beanId"] =
+                                  newId; 
+                            },
+                          ),
                           OutlinedButton(
                               onPressed: () => Navigator.of(context)
                                   .push(appRoutes.routeToBeans()),
@@ -101,15 +104,15 @@ class BeanPurchaseDialog extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: ElevatedButton(
-                        child: Text(buttonText),
-                        onPressed: () {
-  if (_formKey.currentState!.validate()) {
-    mapToEdit["beanId"] = mapToEdit["beanId"] ?? initialValues["beanId"];
-    _formKey.currentState!.save();
-    Navigator.of(context).pop(mapToEdit); 
-  }
-}
-                      ),
+                          child: Text(buttonText),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate() && selectedBeanId != null && selectedPurchaseDate && selectedRoastDate) {
+                              mapToEdit["beanId"] = mapToEdit["beanId"] ??
+                                  initialValues["beanId"];
+                              _formKey.currentState!.save();
+                              Navigator.of(context).pop(mapToEdit);
+                            }
+                          }),
                     )
                   ],
                 ),
@@ -127,7 +130,8 @@ class BeanPurchaseDialog extends StatelessWidget {
         : 'Only decimal numbers are allowed.';
   }
 
-  Padding datePickerItem(String label, String field) {
+  Padding datePickerItem(String label, String field, bool isRoastDate) {
+    isRoastDate ? selectedRoastDate = true : selectedPurchaseDate = true;
     return Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
@@ -135,6 +139,7 @@ class BeanPurchaseDialog extends StatelessWidget {
           children: [
             Text(label, style: prefs.smallInputTextSurface),
             datePicker(
+              initialDate: initialValues[field],
               onDateSelected: (date) {
                 mapToEdit[field] = date?.toIso8601String();
               },

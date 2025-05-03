@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class datePicker extends StatefulWidget {
   final void Function(DateTime?) onDateSelected;
-  const datePicker({super.key, required this.onDateSelected});
+  final DateTime? initialDate;
+  const datePicker({super.key, required this.onDateSelected, this.initialDate});
 
   @override
   State<datePicker> createState() => _datePickerState();
@@ -19,7 +20,7 @@ class _datePickerState extends State<datePicker> {
     int endYear = today.year + 1;
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: today,
+      initialDate: widget.initialDate ?? today,
       firstDate: DateTime(startYear),
       lastDate: DateTime(endYear),
     );

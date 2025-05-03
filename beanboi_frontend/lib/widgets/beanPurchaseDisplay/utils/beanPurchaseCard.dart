@@ -16,11 +16,22 @@ class BeanPurchaseCard extends StatelessWidget {
   late final BeanPurchaseDialog dialog;
   final String user;
   final Function() updatePurchaseCallback;
+  
 
   BeanPurchaseCard(this.data, this.updatePurchaseCallback, this.user, {required this.beans , super.key}) {
     dialog = BeanPurchaseDialog(
       beans: this.beans,
-      initialValues: data,
+      initialValues: {
+        "id": data["id"],
+        "isActive": data["isActive"],
+        "name": data["name"],
+        "beanId": data["beans"]["id"],
+        "pricePaid": data["pricePaid"],
+        "amountPurchased": data["amountPurchased"],
+        "amountRemaining": data["amountRemaining"],
+        "dateOfPurchase": DateTime.parse(data["purchaseDate"]),
+        "dateOfRoast": DateTime.parse(data["roastDate"]),
+      },
       buttonText: "Update",
     );
   }
@@ -96,6 +107,7 @@ class BeanPurchaseCard extends StatelessWidget {
         child: Row(
           children: [
             _buildActionButton(Icons.edit, "Edit", () async {
+              print(dialog.initialValues);
               await showDialog<void>(
                 context: context,
                 builder: (BuildContext context) => dialog,
