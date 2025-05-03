@@ -7,7 +7,7 @@ import 'package:beanboi_frontend/widgets/commonUtils/label.dart';
 import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:beanboi_frontend/widgets/beansDisplay/utils/beanDialog.dart';
-import 'package:beanboi_frontend/controllers/beanCaller.dart' as beanCaller;
+import 'package:beanboi_frontend/controllers/beanPurchaseCaller.dart' as beanPurchaseCaller;
 
 class BeanPurchaseCard extends StatelessWidget {
 
@@ -108,13 +108,13 @@ class BeanPurchaseCard extends StatelessWidget {
           children: [
             _buildActionButton(Icons.edit, "Edit", () async {
               print(dialog.initialValues);
-              await showDialog<void>(
+              final result = await showDialog<Map<String, dynamic>>(
                 context: context,
                 builder: (BuildContext context) => dialog,
               );
-              if (dialog.formComplete) {
-                updateBeans(dialog.mapToEdit);
-                dialog.formComplete = false;
+              print(result);
+             if (result != null) {
+                updatePurchase(result);
                 updatePurchaseCallback();
               }
             }),
@@ -194,29 +194,17 @@ class BeanPurchaseCard extends StatelessWidget {
 
   Future<void> deleteBean() async {
     try {
-      await beanCaller.deleteBean(user, data["id"]);
+      await beanPurchaseCaller.deletePurchase(user, data["id"]);
     } catch (e) {
-      print("Error deleting bean: $e");
+      print("Error deleting purchase: $e");
     }
   }
 
-  Future<void> updateBeans(beanToUpdate) async {
+  Future<void> updatePurchase(mapToUpdate) async {
     try {
-      Map<String, dynamic> updatedBeans = {
-        "name": beanToUpdate["name"],
-        "origin": beanToUpdate["origin"],
-        "process": beanToUpdate["process"],
-        "roastDegree": beanToUpdate["roastDegree"],
-        "roaster": beanToUpdate["roaster"],
-        "altitude": beanToUpdate["altitude"],
-        "tastingNotes": beanToUpdate["tastingNotes"],
-        "id": data["id"],
-        "uid": data["uid"],
-        "isActive": data["isActive"]
-      };
-      await beanCaller.updateBean(updatedBeans, user);
+      await beanPurchaseCaller.updatePurchase(mapToUpdate, user, data["id"]);
     } catch (e) {
-      print("Error updating bean: $e");
+      print("Error updating purchase: $e with input $mapToUpdate and user $user");
     }
   }
   

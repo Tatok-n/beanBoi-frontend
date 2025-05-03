@@ -15,9 +15,9 @@ Future<void> savePurchase (Map<String, dynamic> map, String UID) async {
   await manager.sendPostWithBody(saveBeanURL, map);
 } 
 
-Future<void> updatePurchase (Map<String, dynamic> map, String UID) async {
-  String updateBeanUrl = "/users/"+UID+"/beanPurchases/"+map["id"];
-  await manager.sendPostWithBody(updateBeanUrl, map);
+Future<void> updatePurchase (Map<String, dynamic> map, String UID, String id) async {
+  String updateBeanUrl = "/users/"+UID+"/beanPurchases/"+id;
+  await manager.sendPutWithBody(updateBeanUrl, map);
 } 
 
 Future<void> deletePurchase (String UID, String beanId) async {

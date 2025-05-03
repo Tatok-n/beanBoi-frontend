@@ -24,13 +24,13 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
   late List<Map<String, dynamic>> beans = [];
 
 
-  Map<String, String> addInitialValue = {
+  Map<String, dynamic> addInitialValue = {
     "name": "",
     "beanId": "",
-    "pricePaid": "",
-    "amountPurchased": "",
-    "dateOfPurchase": "",
-    "dateOfRoast": "",
+    "pricePaid": 0.0,
+    "amountPurchased": 0.0,
+    "dateOfPurchase": DateTime.now(),
+    "dateOfRoast":  DateTime.now(),
   };
 
   late BeanPurchaseDialog dialog;
@@ -94,9 +94,9 @@ class _BeanPurchaseDisplay extends State<BeanPurchaseDisplay> {
     await fetchPurchases();
   }
 
-  Future<void> updateBeans(beanToUpdate) async {
+  Future<void> updatePurchase(beanToUpdate, String id) async {
     try {
-      await beanPurchaseCaller.updatePurchase(beanToUpdate, user);
+      await beanPurchaseCaller.updatePurchase(beanToUpdate, user, id);
     } catch (e) {
       print("Error updatingBeans beans: $e");
     }
