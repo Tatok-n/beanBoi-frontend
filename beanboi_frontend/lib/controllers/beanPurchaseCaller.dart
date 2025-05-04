@@ -20,9 +20,9 @@ Future<void> updatePurchase (Map<String, dynamic> map, String UID, String id) as
   await manager.sendPutWithBody(updateBeanUrl, map);
 } 
 
-Future<void> deletePurchase (String UID, String beanId) async {
+Future<void> deletePurchase (String UID, String beanId, bool isArchive) async {
   String deleteBeanUrl = "/users/"+UID+"/beanPurchases/"+beanId;
-  await manager.sendDelete(deleteBeanUrl);
+  await manager.sendDeleteWithBody(deleteBeanUrl, isArchive);
 }
 
 

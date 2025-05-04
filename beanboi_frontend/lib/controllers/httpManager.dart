@@ -60,4 +60,15 @@ Future<void> sendDelete(String path) async {
 }
 
 
+Future<String> sendDeleteWithBody(String path, Object body) async {
+  final response = await http.delete(Uri.parse(baseUrl + path),
+   headers: {'Content-Type': 'application/json'},
+   body: jsonEncode(body));
+      if (response.statusCode == 200) {
+        return "";
+    } else {
+        return "Error ${response.statusCode}: ${response.body}";
+    }
+}
+
 

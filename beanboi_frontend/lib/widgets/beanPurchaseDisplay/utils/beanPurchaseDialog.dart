@@ -108,11 +108,7 @@ class BeanPurchaseDialog extends StatelessWidget {
                       child: ElevatedButton(
                           child: Text(buttonText),
                           onPressed: () {
-                            print("pressed button");
-                            print("mapToEdit: $mapToEdit");
-                            print("initialValues: $initialValues");
                             if (_formKey.currentState!.validate() && ((selectedBeanId != null && selectedPurchaseDate && selectedRoastDate) || isUpdate)) {
-                              print("form is valid");
                               if (isUpdate && selectedBeanId == null) {
                                 mapToEdit["beanId"] = initialValues["beanId"];
                               }; 

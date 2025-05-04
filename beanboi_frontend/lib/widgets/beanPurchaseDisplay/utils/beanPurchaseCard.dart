@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/utils/beanPurchaseDeleteDialog.dart';
 import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/utils/beanPurchaseDialog.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/dataCardWithExtras.dart';
 import 'package:beanboi_frontend/widgets/commonUtils/label.dart';
@@ -37,12 +38,18 @@ class BeanPurchaseCard extends StatelessWidget {
     );
   }
 
+  
+  late BeanPurchaseDeletedialog deleteDialog;
   final Userprefs userprefs = Userprefs();
 
 
 
   @override
   Widget build(BuildContext context) {
+    deleteDialog = BeanPurchaseDeletedialog(
+    beanId: data["id"],
+    uid: user,
+  );
     return DataCardWithExtras(data, user, [
       _buildActionButtons(context),
       getContent(),
@@ -118,7 +125,10 @@ class BeanPurchaseCard extends StatelessWidget {
               }
             }),
             _buildActionButton(Icons.delete, "Delete", () async {
-              await deleteBean();
+              await showDialog<Map<String, dynamic>>(
+                context: context,
+                builder: (BuildContext context) => deleteDialog,
+              );
               updatePurchaseCallback();
             }),
           ],
@@ -191,13 +201,6 @@ class BeanPurchaseCard extends StatelessWidget {
 
   }
 
-  Future<void> deleteBean() async {
-    try {
-      await beanPurchaseCaller.deletePurchase(user, data["id"]);
-    } catch (e) {
-      print("Error deleting purchase: $e");
-    }
-  }
 
   Future<void> updatePurchase(mapToUpdate) async {
     try {
