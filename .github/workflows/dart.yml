@@ -24,11 +24,11 @@ jobs:
         
 
       - name: Install dependencies
-        working-directory: ${{ github.workspace }}/frontend
+        working-directory: ${{ github.workspace }}/beanboi_frontend
         run: flutter pub get
 
       - name: Build Web
-        working-directory: ${{ github.workspace }}/frontend
+        working-directory: ${{ github.workspace }}/beanboi_frontend
         run: flutter build web --release
 
       - name: Upload Web Build
