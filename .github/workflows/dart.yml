@@ -21,11 +21,14 @@ jobs:
 
       - name: Show Flutter version
         run: flutter --version
+        
 
       - name: Install dependencies
+        working-directory: ./beanboi_frontend
         run: flutter pub get
 
       - name: Build Web
+        working-directory: ./beanboi_frontend
         run: flutter build web --release
 
       - name: Upload Web Build
