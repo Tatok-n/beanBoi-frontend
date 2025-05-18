@@ -1,7 +1,9 @@
+import 'package:beanboi_frontend/widgets/commonUtils/userPrefs.dart';
 import 'package:flutter/material.dart';
 
 class BrewRecipeDisplay extends StatefulWidget {
-  const BrewRecipeDisplay({Key? key}) : super(key: key);
+  BrewRecipeDisplay({Key? key}) : super(key: key);
+  Userprefs userprefs = Userprefs();
 
   @override
   _BrewRecipeDisplayState createState() => _BrewRecipeDisplayState();
@@ -9,6 +11,10 @@ class BrewRecipeDisplay extends StatefulWidget {
 
 class _BrewRecipeDisplayState extends State<BrewRecipeDisplay> {
   int _currentStep = 0;
+  double _currentRatioValue = 1;
+  double _currentTemperatureSliderValue = 95;
+  double _currentDurationSliderValue = 25;
+
 
   void _nextStep() {
     if (_currentStep < 2) {
@@ -60,8 +66,8 @@ class _BrewRecipeDisplayState extends State<BrewRecipeDisplay> {
                 _currentStep = step;
               });
             },
-            steps: const [
-              Step(title: Text("A"), content: Text("Provide info A")),
+            steps: [
+              buildInfoStep(),
               Step(title: Text("B"), content: Text("Provide info based on A")),
               Step(title: Text("C"), content: Text("Provide info based on B")),
             ],
@@ -70,4 +76,99 @@ class _BrewRecipeDisplayState extends State<BrewRecipeDisplay> {
       ),
     );
   }
+
+
+  
+Step buildInfoStep() {
+  return Step(
+    title: const Text("General Information"),
+    content: Column(
+      children: [
+        const Text("Provide info"),
+        buildInputField("Name"),
+        buildInputField("Description"),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child : Column(children: [  Text(
+            "Ratio: $_currentRatioValue",
+            style: widget.userprefs.inverseSurfaceTextS,
+          ),buildSlider("Ratio", 0.5, 20, () {return _currentRatioValue;}, (double newValue) {
+            setState(() {
+              _currentRatioValue = newValue;
+            });
+          })],)
+        ),
+        Column(
+          children: [
+            Text(
+            "Temp: $_currentTemperatureSliderValue",
+            style: widget.userprefs.inverseSurfaceTextS,),
+            Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: buildSlider("Temperature", 15, 100, () {return _currentTemperatureSliderValue;}, (double newValue) {
+              setState(() {
+                _currentTemperatureSliderValue = newValue;
+              });
+            }),
+          )],
+        ),
+        Column(
+          children: [
+            Text(
+            "Duration: $_currentDurationSliderValue",
+            style: widget.userprefs.inverseSurfaceTextS,),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: buildSlider("Duration", 5, 240, () {return _currentDurationSliderValue;},  (double newValue) {
+                setState(() {
+                  _currentDurationSliderValue = newValue;
+                });
+              }),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+
+Widget buildInputField(String label) {
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(top : 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+        child: TextField(
+          onChanged: (String value) {
+              
+            },
+          decoration: InputDecoration(
+            labelStyle: Userprefs().inverseSurfaceTextS,
+            labelText: label,
+            border: const OutlineInputBorder(),
+            
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget buildSlider(String label, double min, double max, getValue, setValue(double newValue)) {
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(top : 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+        child: Slider(
+          value: getValue(),
+          min: min,
+          max: max,
+          divisions: ((max - min).abs() * 10).toInt(),
+          label: label,
+          onChanged: (double newValue) {setValue(newValue);},
+        ),
+      ),
+    ],
+  );
+}
 }
