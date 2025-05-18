@@ -1,5 +1,6 @@
 import 'package:beanboi_frontend/main.dart';
 import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/beanPurchaseDisplay.dart';
+import 'package:beanboi_frontend/widgets/brewRecipeDisplay/BrewRecipeDisplay.dart';
 import 'package:beanboi_frontend/widgets/homeScreen/homeScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -9,22 +10,7 @@ import 'appRoutes.dart';
 
 
 class navBar extends StatelessWidget {
-  Route _routeToHome() {
-     return makeAnimatedRoute(MyApp());
-  }
 
-
-  Route _routeToBeans() {
-    return makeAnimatedRoute(BeansDisplay());
-  }
-
-  Route _routeToPurchases() {
-    return makeAnimatedRoute(BeanPurchaseDisplay());
-  }
-
-    Route _routeToGrinders() {
-    return makeAnimatedRoute(GrinderDisplay());
-  }
 
 
   PageRouteBuilder<dynamic> makeAnimatedRoute(Widget destination) {
@@ -49,7 +35,7 @@ class navBar extends StatelessWidget {
   {'name': 'Beans', 'route': appRoutes.routeToBeans()},
   {'name': 'Bean Purchases', 'route': appRoutes.routeToPurchases()},
   {'name': 'Grinders', 'route': appRoutes.routeToGrinders()},
-  {'name': 'Recipes', 'route': appRoutes.routeToBeans()},
+  {'name': 'Recipes', 'route': appRoutes.routeToRecipes()},
   {'name': 'Brews', 'route': appRoutes.routeToBeans()},
   {'name': 'Stats', 'route': appRoutes.routeToBeans()},
   {'name': 'Settings', 'route': appRoutes.routeToBeans()},

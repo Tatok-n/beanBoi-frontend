@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:beanboi_frontend/widgets/beansDisplay/beanDisplay.dart';
 import 'package:beanboi_frontend/widgets/beanPurchaseDisplay/beanPurchaseDisplay.dart';
 import 'package:beanboi_frontend/widgets/grinderDisplay/grinderDisplay.dart';
+import 'package:beanboi_frontend/widgets/brewRecipeDisplay/BrewRecipeDisplay.dart';
 import 'package:beanboi_frontend/main.dart';
 
 class appRoutes {
@@ -9,6 +10,7 @@ class appRoutes {
   static Route routeToBeans() => _makeAnimatedRoute(BeansDisplay());
   static Route routeToPurchases() => _makeAnimatedRoute(BeanPurchaseDisplay());
   static Route routeToGrinders() => _makeAnimatedRoute(GrinderDisplay());
+  static Route routeToRecipes() => _makeAnimatedRoute(BrewRecipeDisplay());
 
   static PageRouteBuilder<dynamic> _makeAnimatedRoute(Widget destination) {
     return PageRouteBuilder(
