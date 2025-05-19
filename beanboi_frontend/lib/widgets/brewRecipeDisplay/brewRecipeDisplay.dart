@@ -14,7 +14,10 @@ class _BrewRecipeDisplayState extends State<BrewRecipeDisplay> {
   double _currentRatioValue = 1;
   double _currentTemperatureSliderValue = 95;
   double _currentDurationSliderValue = 25;
-
+  bool _isEspresso = true;
+  int _numStages = 2;
+  List<String> _stages = [];
+  List<double> _stageValues = [];
 
   void _nextStep() {
     if (_currentStep < 2) {
@@ -68,7 +71,7 @@ class _BrewRecipeDisplayState extends State<BrewRecipeDisplay> {
             },
             steps: [
               buildInfoStep(),
-              Step(title: Text("B"), content: Text("Provide info based on A")),
+              buildStageStep(),
               Step(title: Text("C"), content: Text("Provide info based on B")),
             ],
           ),
@@ -81,10 +84,26 @@ class _BrewRecipeDisplayState extends State<BrewRecipeDisplay> {
   
 Step buildInfoStep() {
   return Step(
-    title: const Text("General Information"),
+    title: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text("Provide general information about the brew !"),
+    ),
     content: Column(
       children: [
-        const Text("Provide info"),
+        SegmentedButton(
+            onSelectionChanged: (newVal) {
+              setState(() {
+                _isEspresso = newVal.contains("espresso");
+                if (!_isEspresso && _numStages == 1) {
+                  _numStages = 2;
+                }
+              });
+            },
+            selected: {_isEspresso ? "espresso" : "v60"},
+            segments: [
+            ButtonSegment(value: "espresso", label: const Text("Espresso")),
+            ButtonSegment(value: "v60", label: const Text("V60")),
+          ],),
         buildInputField("Name"),
         buildInputField("Description"),
         Padding(
@@ -132,6 +151,46 @@ Step buildInfoStep() {
   );
 }
 
+Step buildStageStep() {
+  return Step(
+    title: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: const Text("Provide the number of stages in the brew !")),
+      content : Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Number of stages: $_numStages"),
+          Padding(padding : const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: FloatingActionButton( 
+              onPressed: () {
+                setState(() {
+                  if (_numStages < 10) 
+                  _numStages++;
+                });
+              },
+              child: const Icon(Icons.add),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: FloatingActionButton( 
+              onPressed: () {
+                setState(() {
+                  int min = _isEspresso ? 1 : 2;
+                  if (_numStages > min) 
+                  _numStages--;
+                });
+              },
+              child: const Icon(Icons.remove),
+            ),
+          ),
+        ],
+      ),
+    );
+}
+
 
 Widget buildInputField(String label) {
   return Column(
@@ -140,7 +199,6 @@ Widget buildInputField(String label) {
         padding: const EdgeInsets.only(top : 8.0, bottom: 8.0, left: 16.0, right: 16.0),
         child: TextField(
           onChanged: (String value) {
-              
             },
           decoration: InputDecoration(
             labelStyle: Userprefs().inverseSurfaceTextS,
