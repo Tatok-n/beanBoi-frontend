@@ -21,5 +21,7 @@
   },
   "menuColor": "default-translucent",
   "menuAccent": "subtle",
-  "registries": {}
+  "registries": {
+    "@8starlabs-ui": "https://ui.8starlabs.com/r/{name}.json"
+  }
 }
