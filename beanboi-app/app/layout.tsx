@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/ui/app-sidebar"
+import type { Metadata } from "next"
 
 const notoSerif = Noto_Serif({ subsets: ['latin'], variable: '--font-serif' })
 
@@ -12,6 +13,12 @@ const fontSans = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
 })
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -30,30 +37,19 @@ export default function RootLayout({
       className={cn("antialiased", fontSans.variable, fontMono.variable, "font-serif", notoSerif.variable)}
     >
       <body>
-        <ThemeProvider>
-          {/* SidebarProvider manages state globally */}
-          <SidebarProvider>
-
-            {/* 1. Render the persistent sidebar */}
-            <AppSidebar />
-
-            {/* 2. SidebarInset pushes the content to the right of the sidebar */}
-            <SidebarInset className="flex flex-col flex-1 w-full overflow-hidden">
-
-              {/* Optional: Add a global header with a trigger button for mobile */}
-              <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
-                <SidebarTrigger />
-              </header>
-
-              {/* 3. Render the specific page content here */}
-              <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-6">
+          <ThemeProvider>
+            <SidebarProvider defaultOpen={false}>
+              <SidebarInset className="flex flex-col flex-1 w-full">
+                <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
+                  <SidebarTrigger  />
+                </header>
+                <AppSidebar />
                 {children}
-              </main>
-
-            </SidebarInset>
-
-          </SidebarProvider>
-        </ThemeProvider>
+              </SidebarInset>
+            </SidebarProvider>
+          </ThemeProvider>
+        </main>
       </body>
     </html>
   )

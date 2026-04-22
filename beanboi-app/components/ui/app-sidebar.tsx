@@ -2,7 +2,8 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Home, Settings, Coffee, Book} from "lucide-react"
+import { Home, Settings, Coffee, Book } from "lucide-react"
+import { useState, useEffect } from "react"
 
 import {
   Sidebar,
@@ -25,6 +26,18 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+
+  // 2. Set it to true only after React has successfully hydrated
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // 3. If it hasn't mounted yet, render a safe fallback (or nothing)
+  // This prevents the mobile vs desktop HTML mismatch!
+  if (!mounted) {
+    return null // Or a generic skeleton of the sidebar
+  }
 
   return (
     <Sidebar className="z-100">

@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { BaseTile } from "@/components/homeScreen/tile"
 import Heatmap from "@/components/ui/heatmap"
