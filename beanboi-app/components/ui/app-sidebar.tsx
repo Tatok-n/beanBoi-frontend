@@ -22,6 +22,7 @@ const navItems = [
   { title: "Recipes", href: "/dashboard/recipes", icon: Book },
   { title: "Grinders", href: "/dashboard/grinders", icon: Book },
   { title: "Settings", href: "/dashboard/settings", icon: Settings },
+  { title: "Login", href: "/login", icon:  Book},
 ]
 
 export function AppSidebar() {
