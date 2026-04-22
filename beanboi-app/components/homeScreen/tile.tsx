@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Card } from "@/components/ui/card"
 
 const tileVariants = cva(
-  "rounded-xl border accent text-card-foreground shadow-sm transition-colors",
+  "aspect-square rounded-xl border bg-card text-card-foreground shadow-sm transition-colors flex flex-col",
   {
     variants: {
       variant: {
@@ -15,9 +15,9 @@ const tileVariants = cva(
         muted: "bg-muted/40 border-transparent shadow-none",
       },
       size: {
-        sm: "p-8",
-        md: "p-16",
-        lg: "p-32",
+        sm: "p-4",
+        md: "p-6",
+        lg: "p-8",
       },
     },
     defaultVariants: {
