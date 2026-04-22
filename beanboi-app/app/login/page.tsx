@@ -1,7 +1,5 @@
 "use client"
 import { GoogleAuthCard } from "@/components/auth/google-auth-card"
-import { getBeans } from "@/lib/bean-api"
-import { Button } from "@/components/ui/button"
 
 export default function LoginPage() {
   return (
@@ -13,13 +11,6 @@ export default function LoginPage() {
           console.log("Authenticated user:", user)
         }}
       />
-      <Button
-        onClick={() => {
-          getBeans();
-        }}
-      >
-
-    </Button>
     </main>
   )
 }
