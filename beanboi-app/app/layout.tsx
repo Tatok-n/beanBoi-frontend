@@ -40,11 +40,11 @@ export default function RootLayout({
         <main className="flex-1 overflow-auto p-6">
           <ThemeProvider>
             <SidebarProvider defaultOpen={false}>
+            <AppSidebar />
               <SidebarInset className="flex flex-col flex-1 w-full">
                 <header className="flex h-14 items-center gap-4 border-b bg-background px-6">
                   <SidebarTrigger  />
                 </header>
-                <AppSidebar />
                 {children}
               </SidebarInset>
             </SidebarProvider>

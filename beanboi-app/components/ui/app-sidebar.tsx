@@ -17,7 +17,7 @@ import {
 
 // Define your routes here
 const navItems = [
-  { title: "Dashboard", href: "/dashboard", icon: Home },
+  { title: "Dashboard", href: "/", icon: Home },
   { title: "Beans", href: "/dashboard/beans", icon: Coffee },
   { title: "Recipes", href: "/dashboard/recipes", icon: Book },
   { title: "Grinders", href: "/dashboard/grinders", icon: Book },
