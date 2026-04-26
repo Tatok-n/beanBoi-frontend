@@ -1,7 +1,8 @@
 export type Bean = {
-  id?: string;
+  id: string;
   name: string;
-  roaser: string;
+  tastingNotes: string;
+  roaster: string;
   process: string;
   origin: string;
   roastLevel: number;

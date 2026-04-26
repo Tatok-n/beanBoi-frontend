@@ -1,10 +1,14 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8090";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8090";
 
 type ApiOptions = RequestInit & {
   bodyJson?: unknown;
 };
 
-async function apiFetch<T>(path: string, options: ApiOptions = {}): Promise<T> {
+export async function clientApiFetch<T>(
+  path: string,
+  options: ApiOptions = {}
+): Promise<T> {
   const { bodyJson, headers, ...rest } = options;
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -22,11 +26,16 @@ async function apiFetch<T>(path: string, options: ApiOptions = {}): Promise<T> {
     throw new Error(text || `Request failed with status ${response.status}`);
   }
 
+
   if (response.status === 204) {
     return undefined as T;
   }
 
-  return response.json() as Promise<T>;
-}
+  const text = await response.text();
 
-export { apiFetch };
+  if (!text || text.trim() === "") {
+     return undefined as T;
+  } else {
+    return response.json() as Promise<T>;
+  }
+}

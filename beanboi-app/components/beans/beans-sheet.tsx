@@ -1,9 +1,10 @@
+"use client"
 import { Button } from "@/components/ui/button"
+import { useState } from "react"
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -19,91 +20,153 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-
+import { Input } from "@/components/ui/input"
+import { Slider } from "@/components/ui/slider"
 import { Bean } from "lib/beans/types/bean"
+import { useRouter } from "next/navigation"
+import { updateBean, deleteBean} from "lib/beans/bean-api-client"
 
 type BeanSheetProps = {
   bean: Bean
 }
 
-export function BeanSheet({ bean }: BeanSheetProps) {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" className="capitalize">
-          More Info
-        </Button>
-      </SheetTrigger>
-      <SheetContent
-        side="bottom"
-        className="flex h-[50vh] flex-col"
-      >
-        <SheetHeader>
-          <SheetTitle>{bean.name}</SheetTitle>
-        </SheetHeader>
-        <div className="p-8">
-          <Card className="p-16 bg-accent outline-accent" >
-            <Table>
-              <TableCaption>More details on your bean.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Property</TableHead>
-                  <TableHead>Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">Name</TableCell>
-                  <TableCell>{bean.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Origin</TableCell>
-                  <TableCell>{bean.origin}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Roast</TableCell>
-                  <TableCell>{bean.roastLevel}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Process</TableCell>
-                  <TableCell>{bean.process}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Origin</TableCell>
-                  <TableCell>{bean.origin}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Altitude</TableCell>
-                  <TableCell>{bean.altitude}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Price</TableCell>
-                  <TableCell>{bean.price}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Times Purchased</TableCell>
-                  <TableCell>{bean.timesPurchased}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Roaster</TableCell>
-                  <TableCell>{bean.roaser}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Active</TableCell>
-                  <TableCell>{bean.isActive ? "Yes" : "No"}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </Card>
-        </div>
-        <SheetFooter>
-          <Button type="submit">Save changes</Button>
-          <SheetClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-  )
+type EditableBeanFields = {
+  name: string
+  origin: string
+  roaster: string
+  roastLevel: number
+  process: string
+  altitude: string
 }
+
+export function BeanSheet({ bean }: BeanSheetProps) {
+  const router = useRouter()
+  const [formData, setFormData] = useState<EditableBeanFields>({
+    name: bean.name ?? "",
+    origin: bean.origin ?? "",
+    roaster: bean.roaster ?? "",
+    roastLevel: bean.roastLevel ?? 0,
+    process: bean.process ?? "",
+    altitude: String(bean.altitude) ?? "",
+  })
+
+  const rows = [
+      { key: "name", label: "Name", value: formData.name, editable: true },
+      { key: "origin", label: "Origin", value: formData.origin, editable: true },
+      { key: "roaster", label: "Roaster", value: formData.roaster, editable: true },
+      { key: "roastLevel", label: "Roast", value: formData.roastLevel, editable: true },
+      { key: "process", label: "Process", value: formData.process, editable: true },
+      { key: "altitude", label: "Altitude", value: formData.altitude, editable: true },
+      { key: "price", label: "Price", value: bean.price, editable: false },
+      { key: "timesPurchased", label: "Times Purchased", value: bean.timesPurchased, editable: false },
+    ] as const
+
+
+  function onChange(field: keyof EditableBeanFields, value: string | number) {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  async function onSubmit(formData: EditableBeanFields) {
+    const updatedBean = { ...bean }
+    const editableRows = rows.filter((row) => row.editable)
+    editableRows.forEach((row) => {
+        updatedBean[row.key] = formData[row.key]
+      })
+
+    await updateBean(updatedBean.id, updatedBean);
+    router.refresh()
+  }
+
+  function onCancel(formData: EditableBeanFields) {
+    const originalBean = { ...bean }
+    const updatedFormData = { ...formData }
+    const editableRows = rows.filter((row) => row.editable)
+    editableRows.forEach((row) => {
+        updatedFormData[row.key] = originalBean[row.key]
+      })
+    setFormData(updatedFormData)
+  }
+
+  async function onDelete(beanId: string) {
+    console.log(beanId)
+    await deleteBean(beanId)
+    router.refresh()
+  }
+
+
+  function renderRow(row: {
+      key: string
+      label: string
+      value: string | number
+      editable: boolean
+    }) {
+      return (
+        <TableRow key={row.key}>
+          <TableCell>{row.label}</TableCell>
+          <TableCell>
+            {row.key === "roastLevel" ?
+              <Slider
+                 defaultValue={[row.value] as number[]}
+                 max={5}
+                 step={1}
+                 onValueChange={(value) =>
+                         onChange("roastLevel", (value[0]))
+                       }
+               /> : row.editable ? (
+              <Input
+                value={String(row.value)}
+                onChange={(e) => onChange(row.key as keyof EditableBeanFields, e.target.value)}
+              />
+            ) : (
+              row.value
+            )}
+          </TableCell>
+        </TableRow>
+      )
+    }
+
+    return (
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" className="capitalize">
+            More Info
+          </Button>
+        </SheetTrigger>
+
+        <SheetContent side="bottom" className="flex h-[50vh] flex-col">
+          <SheetHeader>
+            <SheetTitle>{formData.name}</SheetTitle>
+          </SheetHeader>
+
+          <div className="p-8">
+            <Card className="bg-accent p-16 outline-accent">
+              <Table>
+                <TableCaption>More details on your bean.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-25">Property</TableHead>
+                    <TableHead>Value</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>{rows.map(renderRow)}</TableBody>
+              </Table>
+            </Card>
+          </div>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button type="button" onClick={() => onSubmit(formData)}>Save changes</Button>
+            </SheetClose>
+            <SheetClose asChild>
+              <Button variant="outline" onClick={() => onCancel(formData)}>Cancel</Button>
+            </SheetClose>
+            <SheetClose asChild>
+              <Button variant="destructive" onClick={() => onDelete(bean.id)}>Delete</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    )
+  }
