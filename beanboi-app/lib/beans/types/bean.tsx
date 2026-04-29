@@ -5,7 +5,7 @@ export type Bean = {
   roaster: string;
   process: string;
   origin: string;
-  roastLevel: number;
+  roastDegree: number;
   altitude: number;
   price: number;
   timesPurchased: number;

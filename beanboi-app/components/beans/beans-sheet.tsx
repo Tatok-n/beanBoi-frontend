@@ -28,6 +28,7 @@ import { updateBean, deleteBean} from "lib/beans/bean-api-client"
 
 type BeanSheetProps = {
   bean: Bean
+  isCreate: boolean
 }
 
 type EditableBeanFields = {
@@ -39,13 +40,13 @@ type EditableBeanFields = {
   altitude: string
 }
 
-export function BeanSheet({ bean }: BeanSheetProps) {
+export function BeanSheet({ bean, isCreate }: BeanSheetProps) {
   const router = useRouter()
   const [formData, setFormData] = useState<EditableBeanFields>({
     name: bean.name ?? "",
     origin: bean.origin ?? "",
     roaster: bean.roaster ?? "",
-    roastLevel: bean.roastLevel ?? 0,
+    roastLevel: bean.roastDegree ?? 0,
     process: bean.process ?? "",
     altitude: String(bean.altitude) ?? "",
   })
@@ -54,7 +55,7 @@ export function BeanSheet({ bean }: BeanSheetProps) {
       { key: "name", label: "Name", value: formData.name, editable: true },
       { key: "origin", label: "Origin", value: formData.origin, editable: true },
       { key: "roaster", label: "Roaster", value: formData.roaster, editable: true },
-      { key: "roastLevel", label: "Roast", value: formData.roastLevel, editable: true },
+      { key: "roastDegree", label: "Roast", value: formData.roastLevel, editable: true },
       { key: "process", label: "Process", value: formData.process, editable: true },
       { key: "altitude", label: "Altitude", value: formData.altitude, editable: true },
       { key: "price", label: "Price", value: bean.price, editable: false },
@@ -107,13 +108,13 @@ export function BeanSheet({ bean }: BeanSheetProps) {
         <TableRow key={row.key}>
           <TableCell>{row.label}</TableCell>
           <TableCell>
-            {row.key === "roastLevel" ?
+            {row.key === "roastDegree" ?
               <Slider
                  defaultValue={[row.value] as number[]}
-                 max={5}
-                 step={1}
+                 max={100}
+                 step={10}
                  onValueChange={(value) =>
-                         onChange("roastLevel", (value[0]))
+                         onChange("roastDegree", (value[0]))
                        }
                /> : row.editable ? (
               <Input
@@ -157,13 +158,13 @@ export function BeanSheet({ bean }: BeanSheetProps) {
           </div>
           <SheetFooter>
             <SheetClose asChild>
-              <Button type="button" onClick={() => onSubmit(formData)}>Save changes</Button>
+              <Button type="button" onClick={() => onSubmit(formData)}>{isCreate ? "Create" : "Save changes"}</Button>
             </SheetClose>
             <SheetClose asChild>
               <Button variant="outline" onClick={() => onCancel(formData)}>Cancel</Button>
             </SheetClose>
             <SheetClose asChild>
-              <Button variant="destructive" onClick={() => onDelete(bean.id)}>Delete</Button>
+              {!isCreate && <Button variant="destructive" onClick={() => onDelete(bean.id)}>Delete</Button>}
             </SheetClose>
           </SheetFooter>
         </SheetContent>

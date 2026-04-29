@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Bean } from "./bean"
-import { MoreHorizontal } from "lucide-react"
 import { BeanSheet } from "@/components/beans/beans-sheet"
 
 
@@ -24,7 +23,7 @@ export const columns: ColumnDef<Bean>[] = [
       cell: ({ row }) => {
         const bean_row = row.original
         return (
-          <BeanSheet bean={bean_row} />
+          <BeanSheet bean={bean_row} isCreate={false} />
         )
       },
     },
