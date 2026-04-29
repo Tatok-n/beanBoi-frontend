@@ -36,6 +36,6 @@ export async function clientApiFetch<T>(
   if (!text || text.trim() === "") {
      return undefined as T;
   } else {
-    return response.json() as Promise<T>;
+    return JSON.parse(text) as T;
   }
 }

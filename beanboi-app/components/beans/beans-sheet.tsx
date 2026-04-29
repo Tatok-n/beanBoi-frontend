@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import {
   Sheet,
   SheetClose,
@@ -24,50 +24,71 @@ import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 import { Bean } from "lib/beans/types/bean"
 import { useRouter } from "next/navigation"
-import { updateBean, deleteBean} from "lib/beans/bean-api-client"
+import { updateBean, deleteBean, createBean} from "lib/beans/bean-api-client"
 
 type BeanSheetProps = {
   bean: Bean
   isCreate: boolean
+  children?: ReactNode
 }
 
 type EditableBeanFields = {
   name: string
   origin: string
   roaster: string
-  roastLevel: number
+  roastDegree: number
   process: string
   altitude: string
 }
 
-export function BeanSheet({ bean, isCreate }: BeanSheetProps) {
+export function BeanSheet({ bean, isCreate, children }: BeanSheetProps) {
   const router = useRouter()
   const [formData, setFormData] = useState<EditableBeanFields>({
     name: bean.name ?? "",
     origin: bean.origin ?? "",
     roaster: bean.roaster ?? "",
-    roastLevel: bean.roastDegree ?? 0,
+    roastDegree: bean.roastDegree ?? 0,
     process: bean.process ?? "",
     altitude: String(bean.altitude) ?? "",
   })
+  const [newBeanData, setNewBeanData] = useState<EditableBeanFields>({
+    name: "",
+    origin: "",
+    roaster: "",
+    roastDegree: 0,
+    process: "",
+    altitude: "",
+  })
 
   const rows = [
-      { key: "name", label: "Name", value: formData.name, editable: true },
-      { key: "origin", label: "Origin", value: formData.origin, editable: true },
-      { key: "roaster", label: "Roaster", value: formData.roaster, editable: true },
-      { key: "roastDegree", label: "Roast", value: formData.roastLevel, editable: true },
-      { key: "process", label: "Process", value: formData.process, editable: true },
-      { key: "altitude", label: "Altitude", value: formData.altitude, editable: true },
-      { key: "price", label: "Price", value: bean.price, editable: false },
-      { key: "timesPurchased", label: "Times Purchased", value: bean.timesPurchased, editable: false },
-    ] as const
+    { key: "name", label: "Name", value: isCreate ? newBeanData.name : formData.name, editable: true },
+    { key: "origin", label: "Origin", value: isCreate ? newBeanData.origin : formData.origin, editable: true },
+    { key: "roaster", label: "Roaster", value: isCreate ? newBeanData.roaster : formData.roaster, editable: true },
+    { key: "roastDegree", label: "Roast", value: isCreate ? newBeanData.roastDegree : formData.roastDegree, editable: true },
+    { key: "process", label: "Process", value: isCreate ? newBeanData.process : formData.process, editable: true },
+    { key: "altitude", label: "Altitude", value: isCreate ? newBeanData.altitude : formData.altitude, editable: true },
+    ...(!isCreate
+      ? [
+          { key: "price", label: "Price", value: bean.price, editable: false },
+          { key: "timesPurchased", label: "Times Purchased", value: bean.timesPurchased, editable: false },
+        ]
+      : []),
+  ] as const
 
 
-  function onChange(field: keyof EditableBeanFields, value: string | number) {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
+  function onChange(field: keyof EditableBeanFields, value: string | number, isCreate: boolean) {
+    if (isCreate) {
+      setNewBeanData((prev) => ({
+        ...prev,
+        [field]: value,
+      }))
+      return
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }))
+    }
   }
 
   async function onSubmit(formData: EditableBeanFields) {
@@ -80,6 +101,34 @@ export function BeanSheet({ bean, isCreate }: BeanSheetProps) {
     await updateBean(updatedBean.id, updatedBean);
     router.refresh()
   }
+
+  async function onCreate() {
+    const bean : Bean = {
+      name: newBeanData.name,
+      origin: newBeanData.origin,
+      roaster: newBeanData.roaster,
+      roastDegree: newBeanData.roastDegree,
+      process: newBeanData.process,
+      altitude: Number(newBeanData.altitude),
+      tastingNotes: "",
+      price: 0,
+      timesPurchased: 0,
+      uid: "",
+      isActive: true,
+    }
+    await createBean(bean);
+    setNewBeanData({
+      name: "",
+      origin: "",
+      roaster: "",
+      roastDegree: 0,
+      process: "",
+      altitude: "",
+    });
+    router.refresh();
+  }
+
+
 
   function onCancel(formData: EditableBeanFields) {
     const originalBean = { ...bean }
@@ -99,75 +148,89 @@ export function BeanSheet({ bean, isCreate }: BeanSheetProps) {
 
 
   function renderRow(row: {
-      key: string
-      label: string
-      value: string | number
-      editable: boolean
-    }) {
-      return (
-        <TableRow key={row.key}>
-          <TableCell>{row.label}</TableCell>
-          <TableCell>
-            {row.key === "roastDegree" ?
-              <Slider
-                 defaultValue={[row.value] as number[]}
-                 max={100}
-                 step={10}
-                 onValueChange={(value) =>
-                         onChange("roastDegree", (value[0]))
-                       }
-               /> : row.editable ? (
-              <Input
-                value={String(row.value)}
-                onChange={(e) => onChange(row.key as keyof EditableBeanFields, e.target.value)}
-              />
-            ) : (
-              row.value
-            )}
-          </TableCell>
-        </TableRow>
-      )
-    }
+     key: string
+     label: string
+     value: string | number
+     editable: boolean
+   }) {
+     return (
+       <TableRow key={row.key}>
+         <TableCell>{row.label}</TableCell>
+         <TableCell>
+           {row.key === "roastDegree" ? (
+             <Slider
+               value={[Number(row.value)]}
+               max={100}
+               step={10}
+               onValueChange={(value) => onChange("roastDegree", value[0], isCreate)}
+             />
+           ) : row.editable ? (
+             <Input
+               value={String(row.value)}
+               onChange={(e) =>
+                 onChange(row.key as keyof EditableBeanFields, e.target.value, isCreate)
+               }
+             />
+           ) : (
+             String(row.value)
+           )}
+         </TableCell>
+       </TableRow>
+     )
+   }
 
-    return (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" className="capitalize">
-            More Info
-          </Button>
-        </SheetTrigger>
+   return (
+     <Sheet>
+       <SheetTrigger asChild>
+         {children ?? (
+           <Button variant="outline" className="capitalize">
+             More Info
+           </Button>
+         )}
+       </SheetTrigger>
 
-        <SheetContent side="bottom" className="flex h-[50vh] flex-col">
-          <SheetHeader>
-            <SheetTitle>{formData.name}</SheetTitle>
-          </SheetHeader>
+       <SheetContent side="bottom" className="flex h-[50vh] flex-col">
+         <SheetHeader>
+           <SheetTitle>{isCreate ? "Create Bean" : formData.name}</SheetTitle>
+         </SheetHeader>
 
-          <div className="p-8">
-            <Card className="bg-accent p-16 outline-accent">
-              <Table>
-                <TableCaption>More details on your bean.</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-25">Property</TableHead>
-                    <TableHead>Value</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>{rows.map(renderRow)}</TableBody>
-              </Table>
-            </Card>
-          </div>
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button type="button" onClick={() => onSubmit(formData)}>{isCreate ? "Create" : "Save changes"}</Button>
-            </SheetClose>
-            <SheetClose asChild>
-              <Button variant="outline" onClick={() => onCancel(formData)}>Cancel</Button>
-            </SheetClose>
-            <SheetClose asChild>
-              {!isCreate && <Button variant="destructive" onClick={() => onDelete(bean.id)}>Delete</Button>}
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-    )
-  }
+         <div className="p-8">
+           <Card className="bg-accent p-16 outline-accent">
+             <Table>
+               <TableCaption>More details on your bean.</TableCaption>
+               <TableHeader>
+                 <TableRow>
+                   <TableHead className="w-25">Property</TableHead>
+                   <TableHead>Value</TableHead>
+                 </TableRow>
+               </TableHeader>
+               <TableBody>{rows.map(renderRow)}</TableBody>
+             </Table>
+           </Card>
+         </div>
+
+         <SheetFooter>
+           <SheetClose asChild>
+             <Button type="button" onClick={() => isCreate ? onCreate() : onSubmit(formData)}>
+               {isCreate ? "Create" : "Save changes"}
+             </Button>
+           </SheetClose>
+
+           <SheetClose asChild>
+             <Button variant="outline" onClick={() => onCancel(formData)}>
+               Cancel
+             </Button>
+           </SheetClose>
+
+           {!isCreate && bean && (
+             <SheetClose asChild>
+               <Button variant="destructive" onClick={() => onDelete(bean.id)}>
+                 Delete
+               </Button>
+             </SheetClose>
+           )}
+         </SheetFooter>
+       </SheetContent>
+     </Sheet>
+   )
+ }

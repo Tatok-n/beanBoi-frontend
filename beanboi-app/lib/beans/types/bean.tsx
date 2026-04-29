@@ -1,5 +1,5 @@
 export type Bean = {
-  id: string;
+  id?: string;
   name: string;
   tastingNotes: string;
   roaster: string;
