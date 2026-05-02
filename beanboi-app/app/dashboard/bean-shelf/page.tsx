@@ -1,4 +1,5 @@
 
+
 import { BeanPurchase } from "@/lib/beanPurchase/types/beanPurchase"
 import { getBeanPurchases } from "lib/beanPurchase/bean-purchase-api-server"
 import { Card } from "@/components/ui/card"
@@ -7,10 +8,12 @@ import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { getBeans } from "@/lib/beans/bean-api-server"
 import { Bean } from "@/lib/beans/types/bean"
+import { PurchaseSheet } from "@/components/bean-shelf/purchase-sheet"
 
 export default async function BeanShelfPage() {
   //const data = await getBeanPurchases()
   const beans = await getBeans();
+
 
 
 
@@ -42,9 +45,21 @@ function renderBeanTile(bean: Bean) {
         </CardContent>
 
         <CardFooter>
-          <Button className="w-full">
-            Purchase
-          </Button>
+        <PurchaseSheet
+          purchase={{
+            id: undefined,
+            name: "",
+            pricePaid: 0,
+            amountPurchased: 0,
+            amountRemaining: 0,
+            purcahseDate: new Date(),
+            roastDate: new Date(),
+            uid: "",
+            beanId: "",
+            isActive: true,
+          }}
+        isCreate={true}
+        />
         </CardFooter>
       </Card>
   )

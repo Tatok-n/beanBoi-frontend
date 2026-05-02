@@ -4,6 +4,8 @@ import { DataTable } from "lib/beans/types/data-table"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { BeanSheet } from "@/components/beans/beans-sheet"
+import { Bean } from "lib/beans/types/bean"
+
 
 export default async function BeanPage() {
   const data = await getBeans()
